@@ -1,0 +1,376 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+<meta name="description" content=""/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+<title>素人装机及黑果安装配置 | 某不科学的博客</title>
+
+<link rel="shortcut icon" href="https://taosky.github.io/favicon.ico?v=1670599887195">
+
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://taosky.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dockerfile.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dart.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-56540702-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+        gtag('config', 'UA-56540702-2');
+    </script>
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <div class="navbar-brand">
+        <img class="user-avatar" src="/images/avatar.png" alt="头像">
+        <div class="site-name gt-c-content-color-first">
+            某不科学的博客
+        </div>
+    </div>
+    
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+                <div class="nav-item">
+                    
+                        <a href="/" class="menu gt-a-link">
+                            首页
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/tags" class="menu gt-a-link">
+                            标签
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/archives" class="menu gt-a-link">
+                            归档
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="https://taosky.github.io/post/tools" class="menu gt-a-link">
+                            工具
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/friends" class="menu gt-a-link">
+                            友链
+                        </a>
+                    
+                </div>
+            
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1670599887195" action="/search/index.html">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    素人装机及黑果安装配置
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2019-12-18 ·
+                    </time>
+                    
+                        <a href="https://taosky.github.io/tag/_oF3ujKiu/" class="post-tags">
+                            # 装机
+                        </a>
+                    
+                        <a href="https://taosky.github.io/tag/3-BtdIq8G2/" class="post-tags">
+                            # 黑苹果
+                        </a>
+                    
+                </div>
+                
+                <div class="post-content">
+                    <p><strong>2022-07-30更新：</strong><br>
+此前已更换<a href="https://github.com/GeQ1an/MSI-B360M-MORTAR-HACKINTOSH-OPENCORE-EFI">OpenCore EFI配置</a><br>
+EFI分区问题，直接在新建一个FAT32的分区，起名EFI，放入EFI引导，也能被主板识别。</p>
+<hr>
+<p>装机的念头由来已久，虽然本子还能用，平常也就是看看片，打打撸，不过人就总是有一些尝试的欲望，虽然事后坑索然无味，还是会去追求短暂的快乐。从618到618再到双十一，终于在这次双十一成功装机......</p>
+<!-- more -->
+<figure data-type="image" tabindex="1"><img src="https://taosky.github.io/post-images/custom-pc-and-hackintosh/0.png" alt="" loading="lazy"></figure>
+<h2 id="硬件">硬件</h2>
+<p>装机当然要先确定硬件配置，目标是搞个黑果子，顺便能打打游戏，预算四五千。<br>
+首先是阵营的选择，现在好像流行AU + N卡，不过黑果子冇的选，只能是按摩店的显卡（10系以下N卡似乎也可以搞，要新要完美还是A卡吧）；CPU用按摩店的似乎性价比高，不过黑果比较麻烦，据说游戏性能也不如Intel，所以还是选择Intel平台。</p>
+<h3 id="cpu">CPU</h3>
+<p>确定了Intel平台，CPU的选择其实很容易，要打游戏选择最主流的<strong>i5 9400F</strong>，不带核显还能省点钱。（核显涉及到黑苹果硬解的问题，之前的OS X系统即使有独显，没有核显还是不能硬解，而10.14.5 以上版本已经支持独显直接硬解了，所以可以直接选择没有核显的CPU。）</p>
+<h3 id="显卡">显卡</h3>
+<p>显卡的选择其实有点尴尬，需要蓝宝石（苹果御用）或迪兰的卡。RX560XT玩游戏不够；RX570、580矿卡泛滥，已买不到全新的卡；580有个新的阉割版（2048SP）基本不能用于黑苹果（据说可以刷vbios，当然这就超出硬件素人的能力范围了）；RX5500尚未发售......最终能选择的只有<strong>蓝宝石RX590</strong>，这个卡虽然性价比高，比几乎同性能的GTX1660便宜了200左右，但是根据网上的测试功耗比N卡高很多，后面我也自己测了一下，没有网上那么夸张。</p>
+<h3 id="电源">电源</h3>
+<p>有了CPU和显卡就可以确定电源额定功率了，显卡建议电源600w以上，实际上550w就够了（要是1660只要450w，按摩店显卡虽然便宜点，但是电源要贵一点），品牌型号选择风评较好的酷冷GX系列。</p>
+<h3 id="主板">主板</h3>
+<p>首先要关注哪些主板黑果子没问题，最简单的就是去看<a href="https://blog.daliansky.net/Hackintosh-long-term-maintenance-model-checklist.html">Hackintosh黑苹果长期维护机型整理清单<br>
+</a>，找同主板的没什么问题的配置就可以了（CPU和显卡都是免驱的，所以关系不大）。我选的是<strong>微星360M 迫击炮</strong>，这款口碑和销量都不错，群里大佬用了都说好。</p>
+<h3 id="硬盘">硬盘</h3>
+<p>第一块硬盘好像都选NVME协议的M.2接口固态硬盘，根据预算在主流的里面选一个就行，我用的<strong>海康威视C2000 PRO 512G</strong>，十年质保（有写入量要求，感觉和车子质保一样），有点后悔没有直接买1T的，更便宜点，512G双系统+装游戏确实有点捉襟见肘，要再加一块硬盘就比较蛋疼了......</p>
+<h3 id="内存">内存</h3>
+<p>2666频率，哪个便宜买哪个，用的**十铨火神D4 2666 **，2666频率需要在BIOS中开启XMP。</p>
+<h3 id="散热器">散热器</h3>
+<p>就我知道几款性价比高的散热器里面选一个，酷冷T400、大镰刀赤兔马（京东没得卖）、玄冰400，然后我搞了<strong>玄冰400</strong>，对于装机素人来说太难了......</p>
+<h3 id="机箱">机箱</h3>
+<p>开始想用刁丝博，张大妈转了一圈，减钱减到先马平头哥，后来看中了爱国者YOGO，不过好看的机箱散热好像都一般，最后还是<strong>平头哥M1</strong>。</p>
+<h3 id="机箱风扇">机箱风扇</h3>
+<p>平头哥送了一把光环5 LED风扇，不是很喜欢光污染（当然也喜欢不起），自己买了两把<strong>先马游戏风暴风扇</strong></p>
+<h3 id="配置详情">配置详情</h3>
+<table>
+<thead>
+<tr>
+<th>商品</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>i5-9400F盒装</td>
+</tr>
+<tr>
+<td>B360M MORTAR迫击炮</td>
+</tr>
+<tr>
+<td>蓝宝石 RX590 极光</td>
+</tr>
+<tr>
+<td>酷冷至尊 GX550</td>
+</tr>
+<tr>
+<td>海康威视 C2000 PRO</td>
+</tr>
+<tr>
+<td>十铨 火神 DDR4 2666 8G x2</td>
+</tr>
+<tr>
+<td>九州风神 玄冰400</td>
+</tr>
+<tr>
+<td>先马 平头哥M1 +先马 光环5风扇</td>
+</tr>
+<tr>
+<td>先马 游戏风暴风扇 x2</td>
+</tr>
+<tr>
+<td>DW1820A + PCI-E转接板（后加）</td>
+</tr>
+<tr>
+<td>ID-COOLING PL-12025风扇（后装）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="安装">安装</h2>
+<p>应该提前看好教程，边看边装有点慢，不过总体还算顺利。</p>
+<h3 id="散热器安装">散热器安装</h3>
+<p>不愧是反人类400，装了半天，只能是大力出奇迹，把一边扣上，另一边使劲按，不得不说，CPU和主板的还是很牢靠的，不过可能不会再去拆了。。。</p>
+<figure data-type="image" tabindex="2"><img src="https://taosky.github.io/post-images/custom-pc-and-hackintosh/1.jpeg" alt="" loading="lazy"></figure>
+<h3 id="风扇安装">风扇安装</h3>
+<p>风扇侧面有标识提示风向；风扇是没有螺纹的，直接拧就行了；风吹方向用手判断不可靠，要用个纸片测试（装完测试的时候还以为风扇装反了）</p>
+<p>之后又安装了一个ID-COOLING PL-12025（风量大又便宜），顺便学习了一下风扇调速的知识，三针风扇接主板后可以使用DC调速（改变电压），四针风扇接主板后可以通过PWM调速（发送信号）。在BIOS中设置智能模式就可以了。</p>
+<figure data-type="image" tabindex="3"><img src="https://taosky.github.io/post-images/custom-pc-and-hackintosh/bios%E9%A3%8E%E6%89%87.png" alt="" loading="lazy"></figure>
+<h3 id="网卡安装">网卡安装</h3>
+<p>由于需要黑果，后来去淘宝整了一块<strong>DW1820A</strong>。<br>
+蓝牙需要接到主板的USB口，接口有限，只能把前面板的USB2.0口的线拔了，前面板2.0其实也用不到，问题不大。</p>
+<p>插到PCIE后灯也是亮的，看起来可以用。开机却只能看到蓝牙，手动装驱动后也并没有识别，问了大佬才知道原来这块主板的<strong>PCIE_4和M2_2冲突</strong>，把固态硬盘换了个口终于能用了。另外<strong>SATA2和M2_1也冲突</strong>，暂时没用到SATA2，影响不大。</p>
+<h3 id="机箱问题">机箱问题</h3>
+<p>一分货一分钱，机箱虽然还行，给的螺丝就不太行了，后面板固定显卡和网卡的螺丝根本拧不进去，只能稍微固定上，硬盘螺丝也和硬盘上的孔位不太匹配。</p>
+<h2 id="黑果子">黑果子</h2>
+<h3 id="系统安装">系统安装</h3>
+<p>安装其实和Windows差不多，就是镜像写到U盘然后安装，主要是挑硬件（驱动），如果没什么兼容问题，安装很简单，网上详细的教程一大堆，捡重点讲一下。</p>
+<ol>
+<li>在<a href="https://blog.daliansky.net/">黑果小兵的部落格</a>下载最新的<code>.dmg</code>镜像，用<code>etcher</code>等工具写到U盘里。</li>
+<li>找到自己相似硬件的黑苹果EFI配置文件（Clover驱动），可以在<a href="https://blog.daliansky.net/Hackintosh-long-term-maintenance-model-checklist.html">Hackintosh黑苹果长期维护机型整理清单</a>里面找找，使用下载好的EFI配置文件<strong>覆盖<code>U盘ESP分区-EFI-Clover</code>文件夹</strong>，这一步是用现成的驱动防止安装过程出错。</li>
+<li>启动电脑，U盘引导，第一次启动需要给磁盘分区，然后就一路下一步。等<strong>再次重启后，依然需要U盘引导</strong>，因为新安装在磁盘上的Clover是没有加载的驱动的，可能没办法正常启动。选择安装MAC的分区后就可以正常启动了。</li>
+<li>启动后需要做的就是把黑苹果EFI配置文件<strong>覆盖到磁盘的引导分区中</strong>（和覆盖U盘的一样），这样才能通过磁盘正常引导启动。这里需要借助一个应用：**<a href="https://mackie100projects.altervista.org/apps/cloverconf/CCG/builds-data/CCG.zip">Clover Configurator</a> **,打开后找到<code>Mount EFI</code>，然后找到U盘和系统磁盘，分别挂载，把U盘分区内的<code>EFI-Clover</code>文件夹覆盖到到磁盘EFI分区内的<code>EFI-Clover</code>，做完这一步基本就可以正常使用了。</li>
+</ol>
+<figure data-type="image" tabindex="4"><img src="https://taosky.github.io/post-images/custom-pc-and-hackintosh/5.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://taosky.github.io/post-images/custom-pc-and-hackintosh/6.png" alt="" loading="lazy"></figure>
+<h3 id="生成三码">生成三码</h3>
+<p>所谓三码就是三个序列号，由于网上的EFI很多人同时用，序列号也是一样的，有时候会造成用不了Facetime、iMessage等功能。使用之前挂载分区用的<strong>Clover Configurator生成随机的三码</strong>，参考<a href="https://sleele.com/2019/03/21/smbios/">这篇文章</a>。config.plist文件位于EFI分区，需要先挂载，建议备份。生成序列号的时候选择机型需要和自己使用的EFI对应机型一致。</p>
+<h3 id="hidpi">HIDPI</h3>
+<p>说白了就是Windows上的缩放功能，通过缩放系统UI来适应不同分辨率。由于苹果系统只适配自家的机型，所以只有4K以上具有这个缩放功能。通过仿冒可以在任意分辨率下开启这个功能，<strong>一键脚本<a href="https://github.com/xzhih/one-key-hidpi">one-key-hidpi</a></strong>（其实只有2K需要这个功能，1080P用界面会很大，内容也变少）。</p>
+<h3 id="colver界面键盘失灵问题">Colver界面键盘失灵问题</h3>
+<p>间歇出现在Colver界面键盘无法使用的问题，进入系统后也无法识别。试了几次发现不是接口问题，用了PS/2转接头（PS/2需驱动）后解决，但是按键有偏差不好用。后来发现<strong>BIOS里面默认开启了一个和USB相关的选项</strong>，关闭后没有再出现这个情况。</p>
+<h3 id="无线和蓝牙">无线和蓝牙</h3>
+<p>能用的网卡并不多，拆机卡一般比较贵，所以我选择了前面提到的DW1820A，由于是NGFF M.2-WIFI的接口，要插到PCI-E上还要加个转接卡，总共90多，也比拆机卡便宜很多了。这张卡比较玄，部分版本能够在黑果下使用，我用的是w3T3  A00 这个版本的</p>
+<ul>
+<li><a href="https://item.taobao.com/item.htm?id=585419973628">网卡链接</a></li>
+<li><a href="https://item.taobao.com/item.htm?id=573533272993">转接卡链接</a></li>
+</ul>
+<figure data-type="image" tabindex="6"><img src="https://taosky.github.io/post-images/custom-pc-and-hackintosh/4.jpeg" alt="" loading="lazy"></figure>
+<p>驱动安装参考黑果小兵的<a href="https://blog.daliansky.net/DW1820A_BCM94350ZAE-driver-inserts-the-correct-posture.html">DW1820A/BCM94350ZAE/BCM94356ZEPA50DX插入的正确姿势</a>，WIFI默认已经驱动了，只要看蓝牙驱动就好了。</p>
+<h2 id="windows">Windows</h2>
+<h3 id="系统安装-2">系统安装</h3>
+<p>毕竟也是要打游戏的，还是需要双系统。<br>
+以下为单硬盘安装，双硬盘应该简单一点，直接在另一块硬盘安装就好了。主要是参考<a href="https://www.bilibili.com/video/av40466527/">这个视频</a>，已经讲得很详细了，照着做没啥问题。</p>
+<p>下载系统镜像 可以用微软官方的<a href="https://www.microsoft.com/zh-cn/software-download/windows10">媒体创建工具</a>，运行后选择生成ISO文件。</p>
+<figure data-type="image" tabindex="7"><img src="https://taosky.github.io/post-images/custom-pc-and-hackintosh/%E5%88%86%E5%8C%BA.JPG" alt="" loading="lazy"></figure>
+<p>关于安装过程，一通折腾都是因为引导，上面是一张安装完成后的分区图，在Windows安装过程中如果引导分区在第三分区，重启时会报错，所以需要在安装前，将Windows引导放到第一分区（备份好原来的文件），在安装完成后再把Windows引导复制到第三分区，恢复第一分区的Colver引导。</p>
+<p>安装完可以正常使用，Colver会自动识别出Windows的引导。</p>
+<h3 id="a卡插帧">A卡插帧</h3>
+<p>AMD Fluid Motion Video，GCN架构A卡附带功能，据说看动画有效，好像只有Windows可以。</p>
+<ol>
+<li>A卡设置-视频-自定义-打开AMD Fluid Motion，AMD steady Video保持关闭。</li>
+<li>安装<a href="https://www.dogedoge.com/rd/RaMdtJ9pA1LhX29YcBC7rdLWw9Lp0oKaeoIQRis5sv7PsgywHClDpT2yMWs1c8eEd4CtjXFH9AFD%2F1C2CgHQgA%3D%3D">Bluesky Frame Rate Converter</a>（好像需要科学上网），选择<code>MODE2</code>，勾选<code>24p</code>、<code>30P</code>（支持插帧的帧数），然后Enable。</li>
+<li>安装Potplayer（官网最新版，不要mini），在<code>设置-滤镜-全局滤镜优先权-添加系统滤镜</code>，选择<code>Bluesky Frame Rate Converter</code>确定，然后右下角<code>优先顺序</code>设为<code>强制使用</code>。开始由于Potplayer版本问题，老是没有那个滤镜，折腾半天才发现版本问题，话说之前添加WebDAV的时候也有版本原因，所以还是官网下载最新的完整版吧。</li>
+<li>因为只支持24帧和30帧，所以插帧基本只对电影和动画有效。效果的话，画面变化幅度不大的确实变顺畅了，看动画应该不错；画面变化快的时候就感觉变得更模糊了，动作打斗这种不太适合。当然，电影有一种叫电影质感的东西，用这个可能也会影响到观感，这就见仁见智了。</li>
+</ol>
+<h2 id="其它">其它</h2>
+<h3 id="功耗和温度">功耗和温度</h3>
+<ul>
+<li>Windows和黑果待机都是<strong>50W +</strong></li>
+<li>播放4K视频，黑果（IINA硬解）<strong>80W +</strong>，Windows （potplayer硬解）<strong>120W +</strong></li>
+<li>Windows 怪物猎人1080P默认 <strong>300W</strong>左右</li>
+</ul>
+<p>我用的EFI文件的作者说RX580通过修改显卡设置降低显卡功耗，实测4K视频硬解降低30W左右的功耗，但是网页加载会卡一下，打字也有概率卡，体验较差，可能是不适用于590。</p>
+<h2 id="参考">参考</h2>
+<p>https://github.com/andot/MSI-B360M-MORTAR-IMACPRO-EFI<br>
+https://www.sqlsec.com/2018/09/hidpi.html<br>
+https://sleele.com/2019/03/21/smbios/<br>
+https://www.sqlsec.com/2018/09/hidpi.html</p>
+<p>https://post.smzdm.com/p/aqnlz0pp/</p>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://taosky.github.io/post/N1/" class="post-title gt-a-link">
+                    我也买了个N1盒子...
+                </a>
+            </div>
+        
+
+        
+
+        
+            
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+<script>
+    // md5.min.js
+    !function(n){
+        "use strict";
+        function d(n,t){var r=(65535&n)+(65535&t);return(n>>16)+(t>>16)+(r>>16)<<16|65535&r}
+        function f(n,t,r,e,o,u){return d((c=d(d(t,n),d(e,u)))<<(f=o)|c>>>32-f,r);var c,f}
+        function l(n,t,r,e,o,u,c){return f(t&r|~t&e,n,t,o,u,c)}
+        function v(n,t,r,e,o,u,c){return f(t&e|r&~e,n,t,o,u,c)}
+        function g(n,t,r,e,o,u,c){return f(t^r^e,n,t,o,u,c)}
+        function m(n,t,r,e,o,u,c){return f(r^(t|~e),n,t,o,u,c)}
+        function i(n,t){var r,e,o,u,c;n[t>>5]|=128<<t%32,n[14+(t+64>>>9<<4)]=t;var f=1732584193,i=-271733879,a=-1732584194,h=271733878;for(r=0;r<n.length;r+=16)f=l(e=f,o=i,u=a,c=h,n[r],7,-680876936),h=l(h,f,i,a,n[r+1],12,-389564586),a=l(a,h,f,i,n[r+2],17,606105819),i=l(i,a,h,f,n[r+3],22,-1044525330),f=l(f,i,a,h,n[r+4],7,-176418897),h=l(h,f,i,a,n[r+5],12,1200080426),a=l(a,h,f,i,n[r+6],17,-1473231341),i=l(i,a,h,f,n[r+7],22,-45705983),f=l(f,i,a,h,n[r+8],7,1770035416),h=l(h,f,i,a,n[r+9],12,-1958414417),a=l(a,h,f,i,n[r+10],17,-42063),i=l(i,a,h,f,n[r+11],22,-1990404162),f=l(f,i,a,h,n[r+12],7,1804603682),h=l(h,f,i,a,n[r+13],12,-40341101),a=l(a,h,f,i,n[r+14],17,-1502002290),f=v(f,i=l(i,a,h,f,n[r+15],22,1236535329),a,h,n[r+1],5,-165796510),h=v(h,f,i,a,n[r+6],9,-1069501632),a=v(a,h,f,i,n[r+11],14,643717713),i=v(i,a,h,f,n[r],20,-373897302),f=v(f,i,a,h,n[r+5],5,-701558691),h=v(h,f,i,a,n[r+10],9,38016083),a=v(a,h,f,i,n[r+15],14,-660478335),i=v(i,a,h,f,n[r+4],20,-405537848),f=v(f,i,a,h,n[r+9],5,568446438),h=v(h,f,i,a,n[r+14],9,-1019803690),a=v(a,h,f,i,n[r+3],14,-187363961),i=v(i,a,h,f,n[r+8],20,1163531501),f=v(f,i,a,h,n[r+13],5,-1444681467),h=v(h,f,i,a,n[r+2],9,-51403784),a=v(a,h,f,i,n[r+7],14,1735328473),f=g(f,i=v(i,a,h,f,n[r+12],20,-1926607734),a,h,n[r+5],4,-378558),h=g(h,f,i,a,n[r+8],11,-2022574463),a=g(a,h,f,i,n[r+11],16,1839030562),i=g(i,a,h,f,n[r+14],23,-35309556),f=g(f,i,a,h,n[r+1],4,-1530992060),h=g(h,f,i,a,n[r+4],11,1272893353),a=g(a,h,f,i,n[r+7],16,-155497632),i=g(i,a,h,f,n[r+10],23,-1094730640),f=g(f,i,a,h,n[r+13],4,681279174),h=g(h,f,i,a,n[r],11,-358537222),a=g(a,h,f,i,n[r+3],16,-722521979),i=g(i,a,h,f,n[r+6],23,76029189),f=g(f,i,a,h,n[r+9],4,-640364487),h=g(h,f,i,a,n[r+12],11,-421815835),a=g(a,h,f,i,n[r+15],16,530742520),f=m(f,i=g(i,a,h,f,n[r+2],23,-995338651),a,h,n[r],6,-198630844),h=m(h,f,i,a,n[r+7],10,1126891415),a=m(a,h,f,i,n[r+14],15,-1416354905),i=m(i,a,h,f,n[r+5],21,-57434055),f=m(f,i,a,h,n[r+12],6,1700485571),h=m(h,f,i,a,n[r+3],10,-1894986606),a=m(a,h,f,i,n[r+10],15,-1051523),i=m(i,a,h,f,n[r+1],21,-2054922799),f=m(f,i,a,h,n[r+8],6,1873313359),h=m(h,f,i,a,n[r+15],10,-30611744),a=m(a,h,f,i,n[r+6],15,-1560198380),i=m(i,a,h,f,n[r+13],21,1309151649),f=m(f,i,a,h,n[r+4],6,-145523070),h=m(h,f,i,a,n[r+11],10,-1120210379),a=m(a,h,f,i,n[r+2],15,718787259),i=m(i,a,h,f,n[r+9],21,-343485551),f=d(f,e),i=d(i,o),a=d(a,u),h=d(h,c);return[f,i,a,h]}
+        function a(n){var t,r="",e=32*n.length;for(t=0;t<e;t+=8)r+=String.fromCharCode(n[t>>5]>>>t%32&255);return r}
+        function h(n){var t,r=[];for(r[(n.length>>2)-1]=void 0,t=0;t<r.length;t+=1)r[t]=0;var e=8*n.length;for(t=0;t<e;t+=8)r[t>>5]|=(255&n.charCodeAt(t/8))<<t%32;return r}
+        function e(n){var t,r,e="0123456789abcdef",o="";for(r=0;r<n.length;r+=1)t=n.charCodeAt(r),o+=e.charAt(t>>>4&15)+e.charAt(15&t);return o}
+        function r(n){return unescape(encodeURIComponent(n))}
+        function o(n){return a(i(h(t=r(n)),8*t.length));var t}
+        function u(n,t){return function(n,t){var r,e,o=h(n),u=[],c=[];for(u[15]=c[15]=void 0,16<o.length&&(o=i(o,8*n.length)),r=0;r<16;r+=1)u[r]=909522486^o[r],c[r]=1549556828^o[r];return e=i(u.concat(h(t)),512+8*t.length),a(i(c.concat(e),640))}(r(n),r(t))}
+        function t(n,t,r){return t?r?u(t,n):e(u(t,n)):r?o(n):e(o(n))}
+        "function"==typeof define&&define.amd?define(function(){return t}):"object"==typeof module&&module.exports?module.exports=t:n.md5=t;
+    }(this);
+</script>
+
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: 'a1520c10806904212b2d',
+    clientSecret: '43932379b50cc625d1a6686297109399deff1ced',
+    repo: 'taosky.github.io',
+    owner: 'Taosky',
+    admin: ['Taosky'],
+    id: md5(location.pathname),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false       // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+            
+
+            
+        
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first">只能告诉你 要多想</div>
+    <div class="social-container">
+        
+            
+                <a href="https://github.com/Taosky" target="_blank">
+                    <i class="fab fa-github gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+    </div>
+    <div class="footer-info">
+        <span><i class="iconfont reco-copyright"></i> <a><span>2014-</span>
+        2022
+        &nbsp
+        <span>Taosky</span></a></span>
+    </div>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+    </div>
+</div>
+</body>
+</html>

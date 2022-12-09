@@ -1,0 +1,371 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+<meta name="description" content=""/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+<title>HomeAssistant脚本&amp;自动化&amp;Package | 某不科学的博客</title>
+
+<link rel="shortcut icon" href="https://taosky.github.io/favicon.ico?v=1670599887195">
+
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://taosky.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dockerfile.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dart.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-56540702-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+        gtag('config', 'UA-56540702-2');
+    </script>
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <div class="navbar-brand">
+        <img class="user-avatar" src="/images/avatar.png" alt="头像">
+        <div class="site-name gt-c-content-color-first">
+            某不科学的博客
+        </div>
+    </div>
+    
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+                <div class="nav-item">
+                    
+                        <a href="/" class="menu gt-a-link">
+                            首页
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/tags" class="menu gt-a-link">
+                            标签
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/archives" class="menu gt-a-link">
+                            归档
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="https://taosky.github.io/post/tools" class="menu gt-a-link">
+                            工具
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/friends" class="menu gt-a-link">
+                            友链
+                        </a>
+                    
+                </div>
+            
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1670599887195" action="/search/index.html">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    HomeAssistant脚本&amp;自动化&amp;Package
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2018-08-01 ·
+                    </time>
+                    
+                        <a href="https://taosky.github.io/tag/QcyqZ1Q8u/" class="post-tags">
+                            # Home Assistant
+                        </a>
+                    
+                        <a href="https://taosky.github.io/tag/jeCxJml2y-/" class="post-tags">
+                            # 智能家居
+                        </a>
+                    
+                </div>
+                
+                <div class="post-content">
+                    <p>到这里，Homeassistant的主要功能就了解的差不多了，其实所谓“智能”主要就是自动化加上想象力。</p>
+<h2 id="脚本">脚本</h2>
+<p>就是手动触发，然后执行一个或多个动作，详见<a href="https://home-assistant-china.github.io/components/script/">文档</a>。比如下面这个就是延迟三十分钟关闭电扇，这里其实是延迟和关闭开关两个动作了。</p>
+<pre><code class="language-yaml">script:
+  delay_turn_off_switch
+    alias: 延迟关闭电扇
+    sequence:
+      - delay: '00:30'
+      - service: homeassistant.turn_off
+        entity_id: switch.xiaomi_switch_one
+</code></pre>
+<h2 id="自动化">自动化</h2>
+<figure data-type="image" tabindex="1"><img src="https://taosky.github.io/post-images/homeassistant-5/1.png" alt="" loading="lazy"></figure>
+<p>自动化其实也是去执行动作，不过不需要手动触发，而是由某个状态发生改变触发，如时间、开关打开、温度变化等；此外可能还需要一个环境条件，比如人在家、某个时间段内。</p>
+<p>举个例子，如果人在家的话，每天早上9点播报天气情况。这里每天9点就是触发条件，人在家就是环境条件，播报天气就是动作。每个自动化实例可以有多个触发条件和环境条件。</p>
+<p>这里我写了个自动重启HomeAssistant的脚本，<code>shell_command</code>可以执行linux命令，添加了一个脚本去执行这个命令；自动化中<code>trigger</code>是触发条件，这里设定的时间11：30（似乎有简单的写法）；<code>condition</code>是环境条件，这里是设备组的状态，没有设备在家（这个组排除了智能设备）才会执行；<code>action</code>是动作，执行重启的脚本。</p>
+<pre><code class="language-yaml">shell_command:
+  restart_hass: sudo service home-assistant@pi restart
+
+script:
+  restart_hass:
+    alias: 重启HomeAssistant
+    sequence:
+      - service: shell_command.restart_hass
+
+automation:
+- alias: restart_hass_daily
+  initial_state: true
+  trigger:
+    - platform: time
+      hours: 11
+      minutes: 30
+      seconds: 00
+  condition:
+  - condition: state
+    entity_id: group.human_device
+    state: not_home
+  action:
+    - service: script.turn_on
+      entity_id: script.restart_hass
+
+</code></pre>
+<h2 id="package">Package</h2>
+<p>这个东西还挺有用的，就是把一些配置打包成一个文件（上面那个自动重启的代码其实就是了），因为很多功能是需要多个部分的配置，打包后配置更清晰，也方便分享。</p>
+<p>需要在<code>configuration.yaml</code>中添加<code>packages: !include_dir_named packages</code>，然后下载的或自己写的配置直接扔到配置目录下的<code>packages</code>文件夹即可。</p>
+<p>这里需要说明一点，如果<code>antomations.yaml</code>中没有内容，而在包里面有自动化的内容，重启之后会出错，而脚本好像没这个问题，感觉是很奇怪的Bug，所以要先往<code>antomations.yaml</code>里面放至少一个自动化。</p>
+<p>分享一个我参考网上代码修改的延时开关配置，需要修改<code>xiaomi_switch_one</code>为你自己的开关，保存为<code>.yaml</code>后缀放入<code>packages</code>。（需安装Custom UI，参考<a href="https://mou.science/2018/07/29/homeassistant-4/">上一篇</a>）</p>
+<figure data-type="image" tabindex="2"><img src="https://taosky.github.io/post-images/homeassistant-5/2.png" alt="" loading="lazy"></figure>
+<pre><code class="language-yaml">homeassistant:
+  customize:
+    input_boolean.alarm_clock:
+      friendly_name: 延时开关
+
+    sensor.relative_alarm_time:
+      friendly_name: 设定时间
+      custom_ui_state_card: state-card-custom-ui
+      extra_data_template: if (entities['switch.xiaomi_switch_one'].state === 'on') return '延时关闭时间'; else return '延时开启时间';
+
+sensor:
+  - platform: template
+    sensors:
+      relative_alarm_time:
+        value_template: &gt;
+                       {% set relative_time =  (states.input_number.alarmhour.state|float|multiply(60) + states.input_number.alarmminutes.state|float) + (now().hour|float|multiply(60) + now().minute|float) %}
+                       {%- if relative_time &gt; 1440 -%}
+                          {{((relative_time-1920) |int |multiply(60)) | timestamp_custom(&quot;%H:%M&quot;)}}
+                        {%- else -%}
+                          {{((relative_time-480) |int |multiply(60)) | timestamp_custom(&quot;%H:%M&quot;)}}
+                       {%- endif %}
+        unit_of_measurement: &quot;min&quot;
+
+input_boolean:
+  alarm_clock:
+    initial: off
+    icon: mdi:timer
+
+input_number:
+  alarmhour:
+    name: 小时
+    icon: mdi:timer
+    initial: 0
+    min: 0
+    max: 5
+    step: 1
+  alarmminutes:
+    name: 分钟
+    icon: mdi:timer
+    initial: 30
+    min: 0
+    max: 55
+    step: 1
+    
+group:
+  switch1:
+    name: 电扇
+    control: hidden
+    view: no
+    entities:
+      - switch.xiaomi_switch_one
+      - input_boolean.alarm_clock
+      - sensor.relative_alarm_time
+      - input_number.alarmhour
+      - input_number.alarmminutes
+
+automation:
+- alias: countdown time
+  initial_state: true
+  trigger:
+    platform: time
+    minutes: '/1'
+    seconds: 00
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: input_boolean.alarm_clock
+        state: 'on'
+      - condition: template
+        value_template: '{{ (now().hour|float|multiply(60) + now().minute|float - 480 ) |multiply(60) | timestamp_custom(&quot;%H:%M&quot;) == states.sensor.relative_alarm_time.state }}'
+  action:
+    - service_template: &gt;
+        {% if is_state('switch.xiaomi_switch_one', 'off') %}
+          switch.turn_on
+        {% else %}
+          switch.turn_off
+        {% endif %}
+      data:
+        entity_id: switch.xiaomi_switch_one
+    - service: homeassistant.turn_off
+      entity_id: input_boolean.alarm_clock
+    
+</code></pre>
+<h2 id="参考">参考</h2>
+<p>https://bbs.hassbian.com/forum.php?mod=viewthread&amp;tid=1806&amp;highlight=%E5%BB%B6%E6%97%B6<br>
+https://community.home-assistant.io/t/solved-automation-in-package-not-working/24768<br>
+https://www.home-assistant.io/components/script/<br>
+https://www.hachina.io/docs/1848.html</p>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://taosky.github.io/post/homeassistant-4/" class="post-title gt-a-link">
+                    HomeAssistant分组&amp;自定义&amp;Custom UI
+                </a>
+            </div>
+        
+
+        
+
+        
+            
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+<script>
+    // md5.min.js
+    !function(n){
+        "use strict";
+        function d(n,t){var r=(65535&n)+(65535&t);return(n>>16)+(t>>16)+(r>>16)<<16|65535&r}
+        function f(n,t,r,e,o,u){return d((c=d(d(t,n),d(e,u)))<<(f=o)|c>>>32-f,r);var c,f}
+        function l(n,t,r,e,o,u,c){return f(t&r|~t&e,n,t,o,u,c)}
+        function v(n,t,r,e,o,u,c){return f(t&e|r&~e,n,t,o,u,c)}
+        function g(n,t,r,e,o,u,c){return f(t^r^e,n,t,o,u,c)}
+        function m(n,t,r,e,o,u,c){return f(r^(t|~e),n,t,o,u,c)}
+        function i(n,t){var r,e,o,u,c;n[t>>5]|=128<<t%32,n[14+(t+64>>>9<<4)]=t;var f=1732584193,i=-271733879,a=-1732584194,h=271733878;for(r=0;r<n.length;r+=16)f=l(e=f,o=i,u=a,c=h,n[r],7,-680876936),h=l(h,f,i,a,n[r+1],12,-389564586),a=l(a,h,f,i,n[r+2],17,606105819),i=l(i,a,h,f,n[r+3],22,-1044525330),f=l(f,i,a,h,n[r+4],7,-176418897),h=l(h,f,i,a,n[r+5],12,1200080426),a=l(a,h,f,i,n[r+6],17,-1473231341),i=l(i,a,h,f,n[r+7],22,-45705983),f=l(f,i,a,h,n[r+8],7,1770035416),h=l(h,f,i,a,n[r+9],12,-1958414417),a=l(a,h,f,i,n[r+10],17,-42063),i=l(i,a,h,f,n[r+11],22,-1990404162),f=l(f,i,a,h,n[r+12],7,1804603682),h=l(h,f,i,a,n[r+13],12,-40341101),a=l(a,h,f,i,n[r+14],17,-1502002290),f=v(f,i=l(i,a,h,f,n[r+15],22,1236535329),a,h,n[r+1],5,-165796510),h=v(h,f,i,a,n[r+6],9,-1069501632),a=v(a,h,f,i,n[r+11],14,643717713),i=v(i,a,h,f,n[r],20,-373897302),f=v(f,i,a,h,n[r+5],5,-701558691),h=v(h,f,i,a,n[r+10],9,38016083),a=v(a,h,f,i,n[r+15],14,-660478335),i=v(i,a,h,f,n[r+4],20,-405537848),f=v(f,i,a,h,n[r+9],5,568446438),h=v(h,f,i,a,n[r+14],9,-1019803690),a=v(a,h,f,i,n[r+3],14,-187363961),i=v(i,a,h,f,n[r+8],20,1163531501),f=v(f,i,a,h,n[r+13],5,-1444681467),h=v(h,f,i,a,n[r+2],9,-51403784),a=v(a,h,f,i,n[r+7],14,1735328473),f=g(f,i=v(i,a,h,f,n[r+12],20,-1926607734),a,h,n[r+5],4,-378558),h=g(h,f,i,a,n[r+8],11,-2022574463),a=g(a,h,f,i,n[r+11],16,1839030562),i=g(i,a,h,f,n[r+14],23,-35309556),f=g(f,i,a,h,n[r+1],4,-1530992060),h=g(h,f,i,a,n[r+4],11,1272893353),a=g(a,h,f,i,n[r+7],16,-155497632),i=g(i,a,h,f,n[r+10],23,-1094730640),f=g(f,i,a,h,n[r+13],4,681279174),h=g(h,f,i,a,n[r],11,-358537222),a=g(a,h,f,i,n[r+3],16,-722521979),i=g(i,a,h,f,n[r+6],23,76029189),f=g(f,i,a,h,n[r+9],4,-640364487),h=g(h,f,i,a,n[r+12],11,-421815835),a=g(a,h,f,i,n[r+15],16,530742520),f=m(f,i=g(i,a,h,f,n[r+2],23,-995338651),a,h,n[r],6,-198630844),h=m(h,f,i,a,n[r+7],10,1126891415),a=m(a,h,f,i,n[r+14],15,-1416354905),i=m(i,a,h,f,n[r+5],21,-57434055),f=m(f,i,a,h,n[r+12],6,1700485571),h=m(h,f,i,a,n[r+3],10,-1894986606),a=m(a,h,f,i,n[r+10],15,-1051523),i=m(i,a,h,f,n[r+1],21,-2054922799),f=m(f,i,a,h,n[r+8],6,1873313359),h=m(h,f,i,a,n[r+15],10,-30611744),a=m(a,h,f,i,n[r+6],15,-1560198380),i=m(i,a,h,f,n[r+13],21,1309151649),f=m(f,i,a,h,n[r+4],6,-145523070),h=m(h,f,i,a,n[r+11],10,-1120210379),a=m(a,h,f,i,n[r+2],15,718787259),i=m(i,a,h,f,n[r+9],21,-343485551),f=d(f,e),i=d(i,o),a=d(a,u),h=d(h,c);return[f,i,a,h]}
+        function a(n){var t,r="",e=32*n.length;for(t=0;t<e;t+=8)r+=String.fromCharCode(n[t>>5]>>>t%32&255);return r}
+        function h(n){var t,r=[];for(r[(n.length>>2)-1]=void 0,t=0;t<r.length;t+=1)r[t]=0;var e=8*n.length;for(t=0;t<e;t+=8)r[t>>5]|=(255&n.charCodeAt(t/8))<<t%32;return r}
+        function e(n){var t,r,e="0123456789abcdef",o="";for(r=0;r<n.length;r+=1)t=n.charCodeAt(r),o+=e.charAt(t>>>4&15)+e.charAt(15&t);return o}
+        function r(n){return unescape(encodeURIComponent(n))}
+        function o(n){return a(i(h(t=r(n)),8*t.length));var t}
+        function u(n,t){return function(n,t){var r,e,o=h(n),u=[],c=[];for(u[15]=c[15]=void 0,16<o.length&&(o=i(o,8*n.length)),r=0;r<16;r+=1)u[r]=909522486^o[r],c[r]=1549556828^o[r];return e=i(u.concat(h(t)),512+8*t.length),a(i(c.concat(e),640))}(r(n),r(t))}
+        function t(n,t,r){return t?r?u(t,n):e(u(t,n)):r?o(n):e(o(n))}
+        "function"==typeof define&&define.amd?define(function(){return t}):"object"==typeof module&&module.exports?module.exports=t:n.md5=t;
+    }(this);
+</script>
+
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: 'a1520c10806904212b2d',
+    clientSecret: '43932379b50cc625d1a6686297109399deff1ced',
+    repo: 'taosky.github.io',
+    owner: 'Taosky',
+    admin: ['Taosky'],
+    id: md5(location.pathname),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false       // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+            
+
+            
+        
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first">只能告诉你 要多想</div>
+    <div class="social-container">
+        
+            
+                <a href="https://github.com/Taosky" target="_blank">
+                    <i class="fab fa-github gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+    </div>
+    <div class="footer-info">
+        <span><i class="iconfont reco-copyright"></i> <a><span>2014-</span>
+        2022
+        &nbsp
+        <span>Taosky</span></a></span>
+    </div>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+    </div>
+</div>
+</body>
+</html>

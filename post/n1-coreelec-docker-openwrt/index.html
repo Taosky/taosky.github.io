@@ -1,0 +1,355 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+<meta name="description" content=""/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+<title>N1盒子CoreELEC+旁路由 | 某不科学的博客</title>
+
+<link rel="shortcut icon" href="https://taosky.github.io/favicon.ico?v=1670599887195">
+
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://taosky.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dockerfile.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dart.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-56540702-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+        gtag('config', 'UA-56540702-2');
+    </script>
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <div class="navbar-brand">
+        <img class="user-avatar" src="/images/avatar.png" alt="头像">
+        <div class="site-name gt-c-content-color-first">
+            某不科学的博客
+        </div>
+    </div>
+    
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+                <div class="nav-item">
+                    
+                        <a href="/" class="menu gt-a-link">
+                            首页
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/tags" class="menu gt-a-link">
+                            标签
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/archives" class="menu gt-a-link">
+                            归档
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="https://taosky.github.io/post/tools" class="menu gt-a-link">
+                            工具
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/friends" class="menu gt-a-link">
+                            友链
+                        </a>
+                    
+                </div>
+            
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1670599887195" action="/search/index.html">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    N1盒子CoreELEC+旁路由
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2020-02-04 ·
+                    </time>
+                    
+                        <a href="https://taosky.github.io/tag/docker/" class="post-tags">
+                            # Docker
+                        </a>
+                    
+                        <a href="https://taosky.github.io/tag/openwrt/" class="post-tags">
+                            # OpenWrt
+                        </a>
+                    
+                        <a href="https://taosky.github.io/tag/Nj0rT1oygwF/" class="post-tags">
+                            # Linux
+                        </a>
+                    
+                        <a href="https://taosky.github.io/tag/5nZ-ztB03/" class="post-tags">
+                            # 斐讯N1
+                        </a>
+                    
+                </div>
+                
+                <div class="post-content">
+                    <h2 id="前情提要">前情提要</h2>
+<p>上一篇文章中刷了YYF固件（Android），安装Kodi用于看片，安装Entware环境用于PT挂机和媒体服务器。经评论区提醒Android下的Kodi画质不如CoreELEC下的，而且CoreELEC是纯精简版Linux，相比Android没有中间商赚取差价，效率更高。只是装不了Android APP了，影响不大，遂折腾。</p>
+<!-- more -->
+<p>至于旁路由，能够更充分的利用N1，主要功能是科学和屏蔽广告，因为是OpenWrt要再加点什么功能也比较方便。</p>
+<h2 id="coreelec">CoreELEC</h2>
+<p>CoreELEC是一个专为Kodi打造的精简LInux发行版，据说是专门优化的，播放效果和兼容性比Android上的Kodi好很多，还具有一些影音方面的高级功能，比较适合影视爱好者。</p>
+<h3 id="写入u盘">写入U盘</h3>
+<p>首先N1需要降级才能用各种固件，这部分请参考别的文章。</p>
+<p>CoreELEC镜像使用恩山论坛<a href="https://www.right.com.cn/forum/thread-331363-1-1.html">M大的版本</a>，已经对N1做好了适配，目前更新到<code>9.2</code>。为了后面使用OpenWrt，需要安装<code>9.0.2</code>版（因为需要更新内核，只找到<code>9.0.1</code>和<code>9.0.2</code>有适配的新内核）</p>
+<p>首先通过Etcher写入镜像到u盘，N1插上U盘重启，默认就会引导U盘内的系统，第一次启动可能时间长一些。<br>
+<img src="https://taosky.github.io/post-images/1581081165449.png" alt="" loading="lazy"><br>
+这时候需要一个鼠标，启动后要关闭自动更新（因为固件是修改适配N1的，更新官方的就开不出来了），进行语言、网络等设置。</p>
+<p>具体使用和App版的Kodi并没有区别。<br>
+<img src="https://taosky.github.io/post-images/1581081215165.png" alt="" loading="lazy"></p>
+<h3 id="写入emmc">写入EMMC</h3>
+<p>另一种方式是写到EMMC（内部存储），这样就替换了原来的Android系统。</p>
+<p><code>ssh root@N1的IP</code>登陆系统，默认密码“coreelec”。</p>
+<p>执行<code>/flash/installtoemmc</code>执行写入EMMC的命令。(需要注意的是<code>9.0.2</code>以上版本使用<code>/flash/installtoemmc</code>，旧版使用<code>/flash/installtointernal</code>）</p>
+<p>等执行完成重启并拔掉U盘就可以了。</p>
+<pre><code>如果你写到eMMC后，想刷回安卓系统，其实很简单就可以刷回W大的官改固件，只需按照刷官改的方法，准备好usb burning tool，加载固件，点击“开始”刷机，然后ssh登录到CoreELEC系统，执行：reboot update命令，N1会自动重启，然后进入刷机模式，等待刷机完成即可。
+</code></pre>
+<h3 id="entware">Entware</h3>
+<p>安装非常简单 <code>installentware</code>,安装完成后重启，<code>opkg update</code>更新软件源，安装上Transmission等软件就可以实现之前在安卓下的下载机和媒体服务器了（详见前一篇）。</p>
+<h3 id="蓝牙遥控问题">蓝牙遥控问题</h3>
+<p><img src="https://taosky.github.io/post-images/1581074490143.png" alt="" loading="lazy"><br>
+如果是同款遥控器，需要用到<a href="https://www.right.com.cn/forum/forum.php?mod=viewthread&amp;tid=530795">这个帖子</a>的适配文件，复制到<code>/storage/.kodi/userdata/keymaps/</code>路径下，重启N1即可使用。</p>
+<p>不过有个Bug，在输入界面会出现自动输入‘i’的情况，导致无法正常输入，不过论坛里的大神已经在帖子下面回复了解决办法。</p>
+<p>在系统-插件里面按‘system tools’这个插件，然后SSH登陆。<br>
+执行</p>
+<pre><code class="language-bash">systemctl stop kodi
+systemctl stop eventlircd
+evtest
+</code></pre>
+<p>接着<code>vi  ~/.config/hwdb.d/99-iprc1000.hwdb</code>修改文件为（注意格式，有空格）</p>
+<pre><code>#IPRC1000 remote
+evdev:input:b*v0A5Cp8502*
+  KEYBOARD_KEY_7000c=unknown
+</code></pre>
+<p>然后执行</p>
+<pre><code class="language-bash">systemd-hwdb update
+udevadm trigger
+reboot
+</code></pre>
+<p>重启后就可以正常使用了，不过还有个问题是遥控器蓝牙长时间不用断开后，再次按键需要很久才能连上使用，在Android下没有这个问题。。。</p>
+<h2 id="旁路由">旁路由</h2>
+<h3 id="替换内核">替换内核</h3>
+<p>由于CoreELEC自带内核过于精简，缺少某些功能（IPSET），导致OpenWRT下包括科学等一些插件启动不了，有人做了新的内核，只要简单地替换就可以了。（<a href="https://hub.docker.com/r/kanshudj/n1-openwrtgateway">这个Docker镜像的说明中</a>提供了一种不用替换内核添加IPSET功能的办法，尚未尝试）</p>
+<p>下载<a href="https://github.com/Taosky/N1-Backup/raw/master/CoreELEC_9.02_new_kernel/kernel.img">新的内核</a>(9.0.2版)</p>
+<ul>
+<li>
+<p>如果是U盘启动，直接替换U盘下<code>/flash/kernel.img</code>即可。</p>
+</li>
+<li>
+<p>如果是EMMC启动，先把文件传到N1，执行<code>mount -o rw,remount /flash</code>挂载分区为可写，再替换<code>/flash/kernel.img</code>。</p>
+</li>
+</ul>
+<p>如果已经装了新版本的CoreELEC，并且配置了一堆东西不想重新装旧版（像我一样），也是有办法的。下载恩山论坛<a href="https://www.right.com.cn/forum/thread-331363-1-1.html">M大帖子</a>里面的“升级脚本”，没错，升级脚本是可以降级的。。。原理就是替换system分区和内核。然后按照上面写的同样操作就可以了。</p>
+<p>不过降级换内核后，我一连接蓝牙遥控器就卡死，只能用App控制了，不知道是内核的问题还是降级的问题。。。</p>
+<h3 id="docker-和openwrt安装">Docker 和OpenWRT安装</h3>
+<p>Docker是一个容器，有些东西跑一下需要一堆配置，用Docker就可以直接拉取别人做好的镜像，简单设置就可以使用，而且有虚拟化的功能，OpenWRT就是独立安装在这样一个容器下的。<br>
+<img src="https://taosky.github.io/post-images/1581082246881.png" alt="" loading="lazy"></p>
+<p>在CoreELEC下安装比较简单，在Kodi插件-服务程序下可以找到Docker，由于网络原因特别慢，可能需要等上一会儿或是多试几次。</p>
+<p>安装后就可以SSH登陆，<code>docker pull kanshudj/n1-openwrtgateway</code>抓取镜像（这个镜像还有个R9版本，功能更多），这一步可能也要很长时间，取决于网络。</p>
+<p>开启网卡混杂模式<br>
+<code>ip link set eth0 promisc on</code></p>
+<p>创建Macvlan复用网卡，用于虚拟主机接入局域网，这里的gateway和subnet根据自己的网段设置<br>
+<code>docker network create -d macvlan --subnet=192.168.2.0/24 --gateway=192.168.2.1 -o parent=eth0 macnet</code></p>
+<p>创建名为op的OpenWRT容器<br>
+<code>docker run --name op --restart always -d --network macnet --privileged kanshudj/n1-openwrtgateway /sbin/init</code></p>
+<p>创建成功后，启动容器的bash进行设置<br>
+<code>docker exec -it op /bin/bash</code></p>
+<p>修改网关IP等信息<code>vi /etc/config/network</code><br>
+<img src="https://taosky.github.io/post-images/1581082964197.png" alt="" loading="lazy"></p>
+<p>停用防火墙（之前没有这么操作，客户端一直连不上网）<br>
+<code>/etc/init.d/firewall disable&amp;&amp;/etc/init.d/firewall stop</code></p>
+<p>重启网络 <code>/etc/init.d/network restart</code></p>
+<p><code>exit</code>退出到CoreELEC环境下后，重启容器<code>docker restart op</code></p>
+<p>这时候尝试打开<code>http://192.168.2.20</code>（改成自己设置的），出现OpenWRT登陆界面，默认密码是“password”<br>
+<img src="https://taosky.github.io/post-images/1581083208136.png" alt="" loading="lazy"></p>
+<h3 id="客户端设置">客户端设置</h3>
+<p>成功配置并运行OpenWRT后，在客户端设置网关和DNS为容器的IP，我设置的是<code>192.168.2.20</code>，如能成功上网，即配置成功。<br>
+<img src="https://taosky.github.io/post-images/1581083430670.png" alt="" loading="lazy"><br>
+<img src="https://taosky.github.io/post-images/1581083437462.png" alt="" loading="lazy"></p>
+<h3 id="旁路由功能">旁路由功能</h3>
+<ol>
+<li>自带插件<br>
+这个固件默认只有DDNS、广告过滤和科学功能，在服务中可以配置启用，这个版本的科学功能只支持“绕过大陆IP”模式，如需要“某list模式”和更多的功能，可以使用<code>kanshudj/n1-openwrtgateway:r9.10.1</code>这个镜像。</li>
+</ol>
+<figure data-type="image" tabindex="1"><img src="https://taosky.github.io/post-images/1581083706513.png" alt="" loading="lazy"></figure>
+<p>科学功能使用的PDNSD默认使用OpenDNS，有些域名如“sogou.com”会解析不了，修改成阿里和腾讯的DNS服务器即可。<code>vi /etc/pdnsd.conf</code>找到<code>label = &quot;opendns&quot;;</code> 将下面的ip改成<code>223.5.5.5, 119.29.29.29</code>。</p>
+<ol start="2">
+<li>插件安装<br>
+我这里还加了一个解除黄逸云锁定的功能，是用的<a href="https://github.com/project-openwrt/luci-app-unblockneteasemusic">这个插件</a>。</li>
+</ol>
+<p>这个插件依赖<code>curl</code>和<code>node</code>，先安装一下<code>opkg update &amp;&amp; opkg install curl &amp;&amp; opkg install node </code></p>
+<p>然后下载插件包<br>
+<code>wget https://github.com/project-openwrt/luci-app-unblockneteasemusic/releases/download/v2.7-1/luci-app-unblockneteasemusic_2.7-1_all.ipk</code></p>
+<p>安装插件<code>opkg install luci-app-unblockneteasemusic_2.7-1_all.ipk</code></p>
+<p>这个插件有个问题就是在Web界面设置的时候不能启动，需要手动执行<code>/etc/init.d/unblockneteasemusic start</code>启动。可以在系统-启动项-本地启动脚本中添加这条开机自动执行。</p>
+<p>默认情况下客户端会自动生效，IOS和MAC需要安装<a href="https://raw.githubusercontent.com/nondanee/UnblockNeteaseMusic/master/ca.crt">证书</a>并信任。</p>
+<figure data-type="image" tabindex="2"><img src="https://taosky.github.io/post-images/1581084472935.png" alt="" loading="lazy"></figure>
+<h3 id="体验">体验</h3>
+<p>需要的设备设置网关，出了问题别的设备也能正常使用。和原来一样在局域网中，Homekit等各种服务也能正常使用。<br>
+测试了一下，带宽没什么损失，手机上玩游戏也没有跳ping，延迟和直连路由器差不多，看来N1的性能跑这几个小东西还是绰绰有余。<br>
+<img src="https://taosky.github.io/post-images/1581084818446.jpeg" alt="" loading="lazy"></p>
+<p>还有就是绕过国内IP模式的话，BT/PT的国外流量也会被代理，其他的东西也多多少少会受影响，后面可能会换个其它方式吧。</p>
+<h2 id="参考">参考</h2>
+<p>https://post.smzdm.com/p/a25r675q/<br>
+https://zorz.cc/post/n1-docker-openwrt.html<br>
+https://www.right.com.cn/forum/thread-740477-1-1.html<br>
+https://www.gitmemory.com/issue/kob/N1/2/509879330<br>
+https://www.right.com.cn/forum/thread-331363-1-2.html<br>
+https://www.gitmemory.com/issue/kob/N1/2/509879330</p>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://taosky.github.io/post/custom-pc-and-hackintosh/" class="post-title gt-a-link">
+                    素人装机及黑果安装配置
+                </a>
+            </div>
+        
+
+        
+
+        
+            
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+<script>
+    // md5.min.js
+    !function(n){
+        "use strict";
+        function d(n,t){var r=(65535&n)+(65535&t);return(n>>16)+(t>>16)+(r>>16)<<16|65535&r}
+        function f(n,t,r,e,o,u){return d((c=d(d(t,n),d(e,u)))<<(f=o)|c>>>32-f,r);var c,f}
+        function l(n,t,r,e,o,u,c){return f(t&r|~t&e,n,t,o,u,c)}
+        function v(n,t,r,e,o,u,c){return f(t&e|r&~e,n,t,o,u,c)}
+        function g(n,t,r,e,o,u,c){return f(t^r^e,n,t,o,u,c)}
+        function m(n,t,r,e,o,u,c){return f(r^(t|~e),n,t,o,u,c)}
+        function i(n,t){var r,e,o,u,c;n[t>>5]|=128<<t%32,n[14+(t+64>>>9<<4)]=t;var f=1732584193,i=-271733879,a=-1732584194,h=271733878;for(r=0;r<n.length;r+=16)f=l(e=f,o=i,u=a,c=h,n[r],7,-680876936),h=l(h,f,i,a,n[r+1],12,-389564586),a=l(a,h,f,i,n[r+2],17,606105819),i=l(i,a,h,f,n[r+3],22,-1044525330),f=l(f,i,a,h,n[r+4],7,-176418897),h=l(h,f,i,a,n[r+5],12,1200080426),a=l(a,h,f,i,n[r+6],17,-1473231341),i=l(i,a,h,f,n[r+7],22,-45705983),f=l(f,i,a,h,n[r+8],7,1770035416),h=l(h,f,i,a,n[r+9],12,-1958414417),a=l(a,h,f,i,n[r+10],17,-42063),i=l(i,a,h,f,n[r+11],22,-1990404162),f=l(f,i,a,h,n[r+12],7,1804603682),h=l(h,f,i,a,n[r+13],12,-40341101),a=l(a,h,f,i,n[r+14],17,-1502002290),f=v(f,i=l(i,a,h,f,n[r+15],22,1236535329),a,h,n[r+1],5,-165796510),h=v(h,f,i,a,n[r+6],9,-1069501632),a=v(a,h,f,i,n[r+11],14,643717713),i=v(i,a,h,f,n[r],20,-373897302),f=v(f,i,a,h,n[r+5],5,-701558691),h=v(h,f,i,a,n[r+10],9,38016083),a=v(a,h,f,i,n[r+15],14,-660478335),i=v(i,a,h,f,n[r+4],20,-405537848),f=v(f,i,a,h,n[r+9],5,568446438),h=v(h,f,i,a,n[r+14],9,-1019803690),a=v(a,h,f,i,n[r+3],14,-187363961),i=v(i,a,h,f,n[r+8],20,1163531501),f=v(f,i,a,h,n[r+13],5,-1444681467),h=v(h,f,i,a,n[r+2],9,-51403784),a=v(a,h,f,i,n[r+7],14,1735328473),f=g(f,i=v(i,a,h,f,n[r+12],20,-1926607734),a,h,n[r+5],4,-378558),h=g(h,f,i,a,n[r+8],11,-2022574463),a=g(a,h,f,i,n[r+11],16,1839030562),i=g(i,a,h,f,n[r+14],23,-35309556),f=g(f,i,a,h,n[r+1],4,-1530992060),h=g(h,f,i,a,n[r+4],11,1272893353),a=g(a,h,f,i,n[r+7],16,-155497632),i=g(i,a,h,f,n[r+10],23,-1094730640),f=g(f,i,a,h,n[r+13],4,681279174),h=g(h,f,i,a,n[r],11,-358537222),a=g(a,h,f,i,n[r+3],16,-722521979),i=g(i,a,h,f,n[r+6],23,76029189),f=g(f,i,a,h,n[r+9],4,-640364487),h=g(h,f,i,a,n[r+12],11,-421815835),a=g(a,h,f,i,n[r+15],16,530742520),f=m(f,i=g(i,a,h,f,n[r+2],23,-995338651),a,h,n[r],6,-198630844),h=m(h,f,i,a,n[r+7],10,1126891415),a=m(a,h,f,i,n[r+14],15,-1416354905),i=m(i,a,h,f,n[r+5],21,-57434055),f=m(f,i,a,h,n[r+12],6,1700485571),h=m(h,f,i,a,n[r+3],10,-1894986606),a=m(a,h,f,i,n[r+10],15,-1051523),i=m(i,a,h,f,n[r+1],21,-2054922799),f=m(f,i,a,h,n[r+8],6,1873313359),h=m(h,f,i,a,n[r+15],10,-30611744),a=m(a,h,f,i,n[r+6],15,-1560198380),i=m(i,a,h,f,n[r+13],21,1309151649),f=m(f,i,a,h,n[r+4],6,-145523070),h=m(h,f,i,a,n[r+11],10,-1120210379),a=m(a,h,f,i,n[r+2],15,718787259),i=m(i,a,h,f,n[r+9],21,-343485551),f=d(f,e),i=d(i,o),a=d(a,u),h=d(h,c);return[f,i,a,h]}
+        function a(n){var t,r="",e=32*n.length;for(t=0;t<e;t+=8)r+=String.fromCharCode(n[t>>5]>>>t%32&255);return r}
+        function h(n){var t,r=[];for(r[(n.length>>2)-1]=void 0,t=0;t<r.length;t+=1)r[t]=0;var e=8*n.length;for(t=0;t<e;t+=8)r[t>>5]|=(255&n.charCodeAt(t/8))<<t%32;return r}
+        function e(n){var t,r,e="0123456789abcdef",o="";for(r=0;r<n.length;r+=1)t=n.charCodeAt(r),o+=e.charAt(t>>>4&15)+e.charAt(15&t);return o}
+        function r(n){return unescape(encodeURIComponent(n))}
+        function o(n){return a(i(h(t=r(n)),8*t.length));var t}
+        function u(n,t){return function(n,t){var r,e,o=h(n),u=[],c=[];for(u[15]=c[15]=void 0,16<o.length&&(o=i(o,8*n.length)),r=0;r<16;r+=1)u[r]=909522486^o[r],c[r]=1549556828^o[r];return e=i(u.concat(h(t)),512+8*t.length),a(i(c.concat(e),640))}(r(n),r(t))}
+        function t(n,t,r){return t?r?u(t,n):e(u(t,n)):r?o(n):e(o(n))}
+        "function"==typeof define&&define.amd?define(function(){return t}):"object"==typeof module&&module.exports?module.exports=t:n.md5=t;
+    }(this);
+</script>
+
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: 'a1520c10806904212b2d',
+    clientSecret: '43932379b50cc625d1a6686297109399deff1ced',
+    repo: 'taosky.github.io',
+    owner: 'Taosky',
+    admin: ['Taosky'],
+    id: md5(location.pathname),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false       // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+            
+
+            
+        
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first">只能告诉你 要多想</div>
+    <div class="social-container">
+        
+            
+                <a href="https://github.com/Taosky" target="_blank">
+                    <i class="fab fa-github gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+    </div>
+    <div class="footer-info">
+        <span><i class="iconfont reco-copyright"></i> <a><span>2014-</span>
+        2022
+        &nbsp
+        <span>Taosky</span></a></span>
+    </div>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+    </div>
+</div>
+</body>
+</html>

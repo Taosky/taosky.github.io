@@ -1,0 +1,768 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://taosky.github.io</id>
+    <title>某不科学的博客</title>
+    <updated>2022-12-09T15:32:29.047Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://taosky.github.io"/>
+    <link rel="self" href="https://taosky.github.io/atom.xml"/>
+    <subtitle>只能告诉你 要多想</subtitle>
+    <logo>https://taosky.github.io/images/avatar.png</logo>
+    <icon>https://taosky.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2022, 某不科学的博客</rights>
+    <entry>
+        <title type="html"><![CDATA[江苏电信IPTV多设备播放]]></title>
+        <id>https://taosky.github.io/post/jiangsu-telecom-iptv-use/</id>
+        <link href="https://taosky.github.io/post/jiangsu-telecom-iptv-use/">
+        </link>
+        <updated>2022-02-03T15:22:16.000Z</updated>
+        <summary type="html"><![CDATA[<p>迫于看电视，折腾一下IPTV，网上各种帖子讲的很复杂，如果是用的江苏电信且没有特殊的需求，实现多设备看IPTV还是比较容易的，稍微整理一下。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>迫于看电视，折腾一下IPTV，网上各种帖子讲的很复杂，如果是用的江苏电信且没有特殊的需求，实现多设备看IPTV还是比较容易的，稍微整理一下。</p>
+<!-- more -->
+<h2 id="目标">目标</h2>
+<p>实现局域网内各个终端包括其他电视、电脑、手机都能稳定观看直播（实际上外网也能连回家里看）；保留电信IPTV盒子的功能。</p>
+<h2 id="网络环境">网络环境</h2>
+<pre><code>运营商：江苏（苏州）电信
+光猫：友华PT926E（天翼网关3.0）
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://taosky.github.io/post-images/1643904137921.png" alt="" loading="lazy"></figure>
+<h2 id="iptv抓包和测试">IPTV抓包和测试</h2>
+<h3 id="抓包">抓包</h3>
+<p>这一步的目的主要是为了抓取直播源和进行测试，不过现在网上可以找到很多江苏电信的直播源，经过测试，只要连接iptv口，不用什么特殊操作就能播放。</p>
+<details>
+<summary>想看的可以展开</summary>
+<p>抓取可以买个usb网口，一个网口接光猫IPTV口，一个接IPTV盒子，然后进行桥接。在Windows下可以用wireshark进行抓包（记得安装<a href="https://npcap.com/">npcap</a>），后续操作大体可以参考<a href="https://www.bilibili.com/video/BV1mK4y147rk">这个视频</a>。</p>
+<p>
+这里其实涉及到江苏电信（浙江电信好像也是）是用的带鉴权的DHCP。就是说如果要在路由器上获取IP，需要option12（盒子序列号）、option60（加密的认证数据），再拷贝盒子MAC地址进行模拟，但**实际上不用获取IP也能通过组播地址播放**。对认证感兴趣的可以看这几个贴子: <a href="https://www.right.com.cn/forum/thread-7722652-1-1.html" >浙江电信IPTV DHCP鉴权option12与option60获取方法分享</a>、<a href="https://www.right.com.cn/forum/thread-794304-1-1.html">江苏泰州IPTV破解IP认证，实现DHCP获取IP</a>
+</p>
+</details>
+<br/>
+<p>经过测试，使用wireshark进行关键词rstp、igmp抓包，也并不能找到明文的组播地址，所以老老实实用网上的源就好，基本不会变动，可以长期使用。如：<a href="https://www.right.com.cn/forum/thread-7469007-1-1.html">抓的江苏电信IPTV组播地址（2021-12-15）</a>、<a href="https://github.com/shawze/IPTV">IPTV(github)</a></p>
+<h3 id="测试">测试</h3>
+<p>可以用电脑直接连接光猫的IPTV口，使用PotPlayer等软件播放组播地址，如<code>rtp://239.49.8.19:9614</code>。<br>
+<img src="https://taosky.github.io/post-images/1643906132808.PNG" alt="" loading="lazy"></p>
+<h2 id="网络调整">网络调整</h2>
+<h3 id="光猫设置">光猫设置</h3>
+<p>因为路由器和光猫都在弱电箱里，不需要使用网上提的的较多的单线复用（路由器和光猫只有一根线连接的情况），只要再接条线到路由器再设置即可。由于默认只有一个IPTV口，且这个口已经连到了房间的IPTV盒子上，首先需要登陆光猫把IPTV绑定到一个闲置的百兆口上，也就是光猫上有两个IPTV口。</p>
+<p>这时候就需要先获取光猫的超密了，我的光猫是天翼网关3.0，参照<a href="https://www.bilibili.com/read/cv9858309">【教程】使用BurpStuite抓包获取天翼网关超级密码并更改天翼网关为桥接模式 </a>，就能获取明文密码了。主要是利用了一个漏洞，浏览存储目录的时候，拦截请求修改请求目录参数，访问根目录对密码文件进行拷贝，拦截修改情况这步用fiddler也是可以的。（部分光猫似乎不是明文，可以尝试文章评论区的方方法）<br>
+<img src="https://taosky.github.io/post-images/1643974709107.png" alt="" loading="lazy"></p>
+<p>拿到超密后，登陆修改业务绑定信息，INTERNET_B_VID是宽带业务，Other_B_VID是IPTV业务，<strong>把宽带业务的绑定端口减少一个</strong>，我这边是把端口4取消绑定了，端口2是原有的IPTV端口。再<strong>把IPTV业务绑到空出来的端口4</strong>上，这样就<strong>保证IPTV盒子和路由器都能接入IPTV</strong>。<br>
+<img src="https://taosky.github.io/post-images/1643974759338.png" alt="" loading="lazy"><br>
+<img src="https://taosky.github.io/post-images/1643974830047.png" alt="" loading="lazy"></p>
+<h3 id="路由器设置">路由器设置</h3>
+<p><strong>OpenWRT设置参考评论</strong></p>
+<p>首先要将路由器的eth4端口（将要和新增的iptv口连接的端口）从Lan桥接中删除，也就是将它独立出来，这一步的目的是阻止IPTV的组播流量进入局域网（据说会引起风暴，降低网络性能，网上的很多帖子似乎是通过vlan、防火墙流量配置等方法解决的）在我的路由器上如图设置即可，如果是OpenWRT应该是点接口-LAN，从设置里取消勾选。<br>
+<img src="https://taosky.github.io/post-images/1643975701132.png" alt="" loading="lazy"><br>
+<img src="https://taosky.github.io/post-images/1643975769238.png" alt="" loading="lazy"></p>
+<p>用网线把光猫上新增的IPTV口（端口4）连到路由器的eth4，完成物理连接，此时再登陆路由器管理页面可以看到已经连接上了。<br>
+<img src="https://taosky.github.io/post-images/1643906880154.png" alt="" loading="lazy"><br>
+<img src="https://taosky.github.io/post-images/1643975897829.png" alt="" loading="lazy"></p>
+<h3 id="udpxy转http">UDPXY转HTTP</h3>
+<p>UDPXY是把组播流量代理转换为HTTP，一是防止组播流量进入局域网，二是HTTP更加稳定，各终端通用性好。如果是OpenWRT可以安装相应luci插件进行设置，ER-X的EdgeOS基于Debian，自己下载<a href="https://github.com/Taosky/iptv/blob/main/udpxy">二进制文件</a>，再新建个服务用于启动即可。</p>
+<p>拷贝或下载到路由器用户目录后，SSH登陆，<code>chmod +x udpxy</code>添加执行权限，<code>udpxy -S -a 192.168.2.1 -p 4022 -m eth4 -c 10 -B 1MB -M 30</code>先测试一下能不能用。<br>
+<img src="https://taosky.github.io/post-images/1643976837250.png" alt="" loading="lazy"></p>
+<p>打开<code>http://192.168.2.1:4022/status</code>正常显示，播放器打开<code>http://192.168.2.1:4022/udp/239.49.8.19:9614</code>可以播放，测试成功。<br>
+<img src="https://taosky.github.io/post-images/1643979705044.png" alt="" loading="lazy"><br>
+<img src="https://taosky.github.io/post-images/1643976856381.png" alt="" loading="lazy"></p>
+<p>接着创建service<code>sudo vi /etc/systemd/system/udpxy.service</code>（User要设置成ubnt，试了root不行）</p>
+<pre><code class="language-service">[Unit]
+Description=Udpxy
+After=network.target
+
+[Service]
+ExecStart=/home/ubnt/udpxy -S -a 192.168.2.1 -p 4022 -m eth4 -c 10 -B 1MB -M 30
+User=ubnt
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+<p>保存后<code>sudo systemctl daemon-reload</code>、``sudo systemctl start udpxy<code>、</code>sudo systemctl enable udpxy`启动服务、设置为开机自起，此时就基本完成配置了。</p>
+<h2 id="多设备播放">多设备播放</h2>
+<h3 id="pc">PC</h3>
+<p><strong>WIndows上使用Potplayer，Mac上使用IINA</strong>，可以做一个<strong>m3u8列表</strong>方便选取观看，网上的iptv源列表，替换成下列格式，命名为<code>xxx.m3u8</code>，播放器打开即可播放，完整见<a href="https://github.com/Taosky/iptv/blob/main/%E7%9B%B4%E6%92%AD(%E6%B1%9F%E8%8B%8F%E7%94%B5%E4%BF%A121-01-04).m3u8">直播(江苏电信21-01-04).m3u8</a></p>
+<pre><code class="language-m3u8">#EXTM3U
+#EXTINF:-1,CCTV1HD
+http://192.168.2.1:4022/udp/239.49.8.19:9614
+#EXTINF:-1,CCTV2HD
+http://192.168.2.1:4022/udp/239.49.8.50:9802
+#EXTINF:-1,CCTV3HD
+http://192.168.2.1:4022/udp/239.49.9.31:6000
+#EXTINF:-1,CCTV4HD
+http://192.168.2.1:4022/udp/239.49.8.51:9806
+#EXTINF:-1,CCTV5HD
+http://192.168.2.1:4022/udp/239.49.8.75:8000
+#EXTINF:-1,CCTV5+HD
+http://192.168.2.1:4022/udp/239.49.8.18:9610
+</code></pre>
+<figure data-type="image" tabindex="2"><img src="https://taosky.github.io/post-images/1643977726691.png" alt="" loading="lazy"></figure>
+<h3 id="电视">电视</h3>
+<p>Android电视和盒子可以安装<a href="https://github.com/Taosky/iptv/blob/main/DIYP%E5%BD%B1%E9%9F%B3.apk">DIYP影音</a>，然后在设置内自定义播放列表，打开对应URL就可以进行设置，格式为<code>频道名称,http地址</code>，完整见<a href="https://github.com/Taosky/iptv/blob/main/%E7%9B%B4%E6%92%AD%E5%88%97%E8%A1%A8%EF%BC%88DIYP%E5%BD%B1%E9%9F%B3%EF%BC%89.txt">直播列表（DIYP影音）.txt</a><br>
+<img src="https://taosky.github.io/post-images/1643978947009.JPG" alt="" loading="lazy"><br>
+<img src="https://taosky.github.io/post-images/1643978363931.png" alt="" loading="lazy"></p>
+<h3 id="移动端">移动端</h3>
+<p>可以播放m3u8的播放器即可，或者手动复制http链接使用。</p>
+<h2 id="其他">其他</h2>
+<h3 id="外网播放">外网播放</h3>
+<p>操作是可行的，不建议使用，占用大量上传，还存在一定风险。</p>
+<h2 id="参考">参考</h2>
+<p>https://github.com/itiddler/udpxy_erx<br>
+https://blog.friskit.me/2020/05/31/bjunicom-network.html<br>
+https://www.bilibili.com/read/cv9858309<br>
+https://www.right.com.cn/forum/thread-7722652-1-1.html<br>
+https://www.right.com.cn/forum/thread-794304-1-1.html</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[NAS系列：Ubuntu用作NAS硬盘休眠问题]]></title>
+        <id>https://taosky.github.io/post/ubuntu-nas-hdd-spindown/</id>
+        <link href="https://taosky.github.io/post/ubuntu-nas-hdd-spindown/">
+        </link>
+        <updated>2021-08-06T12:43:36.000Z</updated>
+        <summary type="html"><![CDATA[<p>NAS重做了系统，据之前使用的体验，OMV各种BUG挺多的，作为NAS系统也搞不出啥花样，就换成了XUbuntu（Debian的安装太烦，还要联网），<strong>硬盘休眠</strong>一直有些问题，折腾了很久，因此记录一下。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>NAS重做了系统，据之前使用的体验，OMV各种BUG挺多的，作为NAS系统也搞不出啥花样，就换成了XUbuntu（Debian的安装太烦，还要联网），<strong>硬盘休眠</strong>一直有些问题，折腾了很久，因此记录一下。</p>
+<!-- more -->
+<p>自带<code>hdparm -S</code>设置时间，总是不能休眠，手动<code>hdparm -Y</code>可以。研究了半天，又是<code>APM</code>又是用<code>hd-idle</code>替代，都不好使。</p>
+<p>最后发现了有人写了个脚本<code>hdd-spindown.sh</code>，用了一种简单直接的办法，每隔一定时间读取<code>/sys/block/sdX/stat</code>，检查设定时间内有没有数据写入，再判断硬盘当前状态，手动<code>hdparm -Y</code>休眠硬盘。</p>
+<p>然而这个脚本我实际使用的时候，需要把的<code>dev_isup &quot;$1&quot; &amp;&amp; return 0</code>注释掉（似乎是执行结果会一直得出硬盘处在活跃状态），并且把无数据写入时间和检测间隔设置的很短的情况下才能成功休眠。</p>
+<figure data-type="image" tabindex="1"><img src="https://taosky.github.io/post-images/1628312481300.png" alt="" loading="lazy"></figure>
+<p><a href="https://github.com/lynix/hdd-spindown.sh/issues/5">有人提到</a>在高版本Linux内核的系统上，脚本会一直判断有数据写入而不会休眠硬盘，然后写了<a href="https://github.com/bocki/hdd-spindown.sh">修改版</a>，配置文件有些许区别，同样注释掉出问题的行（ <strong>第55行</strong>）后，的确能正常使用了。<br>
+<img src="https://taosky.github.io/post-images/1628313903754.png" alt="" loading="lazy"></p>
+<p>硬盘休眠状态可以用脚本检测，想看的时候执行一下就行。</p>
+<pre><code class="language-bash">#!/bin/bash
+dsk=`ls /dev/|grep 'sd[a-z]$'`
+echo `date +%c`
+for i in $dsk;
+do
+echo -n &quot;/dev/$i : &quot; ;
+echo `smartctl -i -n standby /dev/$i|grep &quot;mode&quot;|awk '{print $4}' `;
+done
+exit
+</code></pre>
+<figure data-type="image" tabindex="2"><img src="https://taosky.github.io/post-images/1628315614790.png" alt="" loading="lazy"></figure>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[切换至Caddy2 ]]></title>
+        <id>https://taosky.github.io/post/qie-huan-zhi-caddy2/</id>
+        <link href="https://taosky.github.io/post/qie-huan-zhi-caddy2/">
+        </link>
+        <updated>2021-01-10T02:16:30.000Z</updated>
+        <summary type="html"><![CDATA[<p>原来用的Caddy1，后来发现官网上只有新的2.0的二进制文件了，不过原来用的1.0的也能用就没换。最近Caddy服务重启的时候总是很慢，kill -10重载配置也没反应，体验很差，就索性换成Caddy2了。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>原来用的Caddy1，后来发现官网上只有新的2.0的二进制文件了，不过原来用的1.0的也能用就没换。最近Caddy服务重启的时候总是很慢，kill -10重载配置也没反应，体验很差，就索性换成Caddy2了。</p>
+<!--more-->
+<h2 id="安装">安装</h2>
+<h3 id="二进制文件">二进制文件</h3>
+<p><a href="https://caddyserver.com/download">官网</a>下载，简单粗暴。可以勾选各种额外功能包，我选了<code>caddy-webdav</code>用来做webdav文件管理，<code>cloudflare</code>用于申请tls证书（后来实测没用，还是<a href="https://github.com/acmesh-official/acme.sh/wiki/%E8%AF%B4%E6%98%8E">acme.sh</a>好用）。最后选择平台下载。</p>
+<h3 id="linux服务">Linux服务</h3>
+<p>参见官方文档的<a href="https://caddyserver.com/docs/install#linux-service">Linux service</a>。<br>
+二进制文件放到<code>/usr/bin</code></p>
+<p>创建一个<code>caddy</code>组和用户专门运行这个服务:</p>
+<pre><code class="language-shell">sudo groupadd --system caddy
+</code></pre>
+<pre><code class="language-shell">sudo useradd --system \
+    --gid caddy \
+    --create-home \
+    --home-dir /var/lib/caddy \
+    --shell /usr/sbin/nologin \
+    --comment &quot;Caddy web server&quot; \
+    caddy
+</code></pre>
+<p>选择官方的服务配置文件下载，Caddy2有两种配置方法，一种是<code>API模式</code>，另一种是和原来比较相似的<code>Caddyfile配置</code>，我选的后者，修改和维护比较方便，<a href="https://github.com/caddyserver/dist/blob/master/init/caddy.service">caddy.service</a></p>
+<p>保存到<code>/etc/systemd/system/caddy.service</code></p>
+<p>重载服务配置</p>
+<pre><code class="language-shell">sudo systemctl daemon-reload
+</code></pre>
+<p>启动并查看caddy运行状况</p>
+<pre><code class="language-shell">sudo systemctl start caddy
+sudo systemctl status caddy
+</code></pre>
+<h2 id="配置">配置</h2>
+<p>配置部分比较麻烦，特别是看到官方的文档以后...直接使用以前的配置是完全不行的。</p>
+<h3 id="配置结构">配置结构</h3>
+<p>配置默认还是以一个<code>Caddyfile</code>作为入口，存放主要的全局配置等内容；像<code>nginx</code>一样引入子配置，每个站点单独配置，易于管理。</p>
+<pre><code>/etc/caddy/Caddyfile
+/etc/caddy/site1.xxx.xx.caddy
+/etc/caddy/site2.yyy.xx.caddy
+</code></pre>
+<p>下面是一个<code>Caddyfile</code>的例子</p>
+<pre><code>{
+    auto_https off
+    http_port 1984
+    https_port 1989
+}
+
+(COMMON_CONFIG) {
+    encode zstd gzip
+}
+
+(SITE_XXX_XX_TLS) {
+    tls  /etc/letsencrypt/live/XXX.XX/fullchain.pem /etc/letsencrypt/live/XXX.XX/privkey.pem
+    protocols tls1.2 tls1.3
+}
+
+import /etc/caddy/*.caddy
+</code></pre>
+<p>第一段<code>{}</code>代表的是全局选项，我这里修改了默认的http和https端口，关闭自动https。更多设置见官方文档<a href="https://caddyserver.com/docs/caddyfile/options">Global options</a></p>
+<p>后面两段可以认为是具有命名的配置片段，如<code>COMMON_CONFIG</code>就是一个命名，在<code>Caddyfile</code>和其它<code>*.caddy</code>文件中可以插入。<code>SITE_XXX_XX_TLS</code>内配置了TLS协议和证书，这里申请的是泛域名证书，我就可以在同一主域下的所有配置文件中通过<code>import SITE_XXX_XX_TLS</code>插入，不必重复写一长串。</p>
+<p>最后<code>import /etc/caddy/*.caddy</code>即是引入具体站点配置。</p>
+<pre><code>https://abc.xxx.xx:4399 {
+    import COMMON_CONFIG
+    import SITE_XXX_XX_TLS
+
+    reverse_proxy http://127.0.0.1:1234
+}
+
+
+</code></pre>
+<p>这是一个简单的反向代理的配置，这里结构和<code>caddy1</code>差不多，通过<code>import COMMON_CONFIG</code>和<code> import SITE_XXX_XX_TLS</code>引入<code>Caddyfile</code>内的配置片段，<code>reverse_proxy</code>就是之前的<code>proxy</code>。这样一个简单的配置就完成了，可以试着重启<code>caddy</code>。</p>
+<h3 id="webdav和file_server">webdav和file_server</h3>
+<p>我这个web页面主要是用于访问文件，要用到webdav和file_sever。</p>
+<pre><code> webdav /webdav/* {
+            root /mnt/M/share/
+            prefix /webdav
+        }
+</code></pre>
+<p><code>webdav</code>后面代表匹配的路径，在访问<code>/webdav/xxx</code>这类子路径时生效，<code>root</code>代表文件系统路径，<code>prefix</code>前缀用于修正访问文件目录的路径，比如访问<code>/webdav/img/1.png</code>，如果没有设置<code>prefix</code>，默认就会去文件系统访问<code>/mnt/M/share/webdav/img/1.png</code>，加上<code>prefix</code>参数，系统就会知道访问路径开头的<code>/webdav</code>是需要去掉的。</p>
+<p>这个<code>webdav</code>不能像<code>caddy1</code>一样设置只读，所以只能通过配置要访问的文件对运行服务的<code>caddy</code>用户的读写权限实现。</p>
+<pre><code>root * /mnt/M
+file_server /share/* browse
+</code></pre>
+<p><code>file_server</code>需要设置<code>root</code>'根目录'，<code>file_server</code>后面的 <code>/share/*</code> 即是匹配路径，也是文件系统的相对路径，这里把<code>/mnt/M</code>设为根目录，访问<code>/share/XXX</code>时会去访问文件系统的<code>/mnt/M/share/XXX</code>，<code>browse</code>参数会在访问时显示默认的页面，方便检索，这个页面和<code>caddy1</code>的<code>browse</code>是一样的。</p>
+<p>因为匹配路径的问题，默认访问<code>/share</code> 及<code>/webdav</code>会404，使用<code>redir /share /share/</code>重定向可以解决。</p>
+<p>当<code>file_server</code>和<code>webdav</code>同时使用时，需要加上<a href="https://caddyserver.com/docs/caddyfile/directives/route#route">route</a>，原因不太清楚。</p>
+<pre><code>route {
+    webdav /webdav/* {
+        root /mnt/M/share/
+        prefix /webdav
+    }
+}
+
+root * /mnt/M
+file_server /share/* browse
+</code></pre>
+<h3 id="basicauth">basicauth</h3>
+<p>这个主要是配置里面的密码从明文变成了哈希串的base64编码，并可以设置哈希算法（默认是bcrypt）。<br>
+在线计算<a href="https://www.jisuan.mobi/p163u3BN66Hm6JWx.html">生成bcrypt</a>，再进行<a href="https://tool.oschina.net/encrypt?type=3">base64编码</a>，就是需要填入配置中的密码。</p>
+<p>如密码<code>github</code>得到的结果可能是<code>JDJhJDEwJHpranZHRmliampldDgzaGRyc1B1cWVteHhnWUNic0xvU0VTaHg3RERJY0JYekxLWW5lbEND</code></p>
+<pre><code> basicauth /share/* {
+            git DJhJDEwJHpranZHRmliampldDgzaGRyc1B1cWVteHhnWUNic0xvU0VTaHg3RERJY0JYekxLWW5lbEND
+        }
+</code></pre>
+<h3 id="tls">tls</h3>
+<p>因为不是标准端口的网站，没办法用文件的方式自动申请证书。一开始用<code>cloudflare</code>模块，试了很久不行，总是提示在后台申请证书，没个结果。后来还是用<a href="https://certbot.eff.org/">certbot</a>搞定了，手动在配置中指定泛域名证书，也挺方便的。</p>
+<h2 id="参考">参考</h2>
+<p><a href="https://caddyserver.com/docs/">Caddy Documentation</a><br>
+<a href="https://mritd.com/2021/01/07/lets-start-using-caddy2/">Caddy2 简明教程 </a></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[NAS系列：OMV使用虚拟群晖备份照片]]></title>
+        <id>https://taosky.github.io/post/virtual-qunhui-photos-backup/</id>
+        <link href="https://taosky.github.io/post/virtual-qunhui-photos-backup/">
+        </link>
+        <updated>2020-11-14T04:37:41.000Z</updated>
+        <summary type="html"><![CDATA[<p>使用群晖App备份管理照片，并在电脑上通过Google Photos二次备份（顺便一提，Google Photos前几天宣布不再免费无限高品质备份了，到明年6月前还可以）。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>使用群晖App备份管理照片，并在电脑上通过Google Photos二次备份（顺便一提，Google Photos前几天宣布不再免费无限高品质备份了，到明年6月前还可以）。</p>
+<!-- more -->
+<h2 id="虚拟群晖安装">虚拟群晖安装</h2>
+<p>上一篇讲了如何在OMV安装使用VirtualBox，安装虚拟黑群晖和正常安装类似，简单说明一下。</p>
+<ol>
+<li>把引导的<code>XPEnoboot_DS3615xs_5.2-5967.1.iso</code>挂载到光盘（我这里用的是DSM_DS3615xs_5967这个版本），设置网络为桥接。</li>
+<li>引导启动（等进入默认启动项就行，不用操作），浏览器进入安装页面（可以路由器上看IP），一通点，选择下好的<code>DSM_DS3615xs_5967.pat</code>文件进行安装。</li>
+<li>设置登录并创建存储，安装Photo Station套件。<br>
+<em>虚拟机硬盘分配7、8个G差不多，太小群晖里面分不出存储空间来</em><br>
+<img src="https://taosky.github.io/post-images/1605294909000.png" alt="" loading="lazy"></li>
+</ol>
+<h2 id="nfs挂载">NFS挂载</h2>
+<p>原理就是在把主机的路径通过NFS挂载到虚拟的群晖里面，就能使用各种套件来备份整理了。</p>
+<p>首先要在主机开个NFS服务器并共享需要用于虚拟群晖备份的路径，OMV的话直接点点点就好了。这里演示的是设置成虚拟群晖IP，也可以<code>192.168.2.0\24</code>这种让局域网其它IP也能访问。<br>
+<img src="https://taosky.github.io/post-images/1605294235268.png" alt="" loading="lazy"></p>
+<p>虚拟群晖设置开启SSH，登录账号是<code>root</code>，密码是管理员密码。<br>
+<img src="https://taosky.github.io/post-images/1605294419026.png" alt="" loading="lazy"></p>
+<p>登录终端后，输入<code>/bin/mount -t nfs 主机IP:/export/路径  /volume1/photo</code>测试能不能成功挂载。（此处根据不同系统和软件包版本，有的是绝对路径，如<code>/bin/mount -t nfs 主机IP:/media/xxx/photos  /volume1/photo</code>）<br>
+<img src="https://taosky.github.io/post-images/1605294592211.png" alt="" loading="lazy"></p>
+<p>测试可以的话，<code>vi /etc/rc</code>，把刚才的命令加到<code>exit 0</code>之前，让它开机就挂载。<br>
+<img src="https://taosky.github.io/post-images/1605294679597.png" alt="" loading="lazy"></p>
+<p>挂在成功后再群晖各个套件里面应该就能看到了，可以使用群晖的<code>DS Photo</code> App进行备份等操作。<br>
+<img src="https://taosky.github.io/post-images/1605294830867.png" alt="" loading="lazy"></p>
+<h2 id="google-photos自动二次备份">Google Photos自动二次备份</h2>
+<p>如果需要云备份的话，可以在主机上用Samba把路径分享出来，在电脑上进行挂载。这里有个问题，群晖的Photo Station套件会生成<code>@eaDir</code>的缩略图文件夹，里面大量缩略图会造成备份混乱。</p>
+<p>通过查询帮助文档发现有个<code>veto files</code>的选项可以忽略指定的路径和文件（性能上有损失），设置一下即可。<img src="https://taosky.github.io/post-images/1605295751993.png" alt="" loading="lazy"></p>
+<p>这时候在Google Photos里面选择Samba的照片路径，就能正常备份了。<br>
+<img src="https://taosky.github.io/post-images/1605295784266.png" alt="" loading="lazy"></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[NAS系列：OMV5（Debian 10）安装使用VirtualBox]]></title>
+        <id>https://taosky.github.io/post/omv5-debian10-install-virtualbox/</id>
+        <link href="https://taosky.github.io/post/omv5-debian10-install-virtualbox/">
+        </link>
+        <updated>2020-10-02T04:00:42.000Z</updated>
+        <summary type="html"><![CDATA[<p>由于操作偏差，蜗牛上的OMV4系统几乎不能用了，于是重新安装了OMV5系统。之前用的VirtualBox的插件运行虚拟群晖来管理，OMV5就无法安装这个插件了，但是可以在Debian直接安装VirtualBox，并利用远程桌面和命令进行管理。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>由于操作偏差，蜗牛上的OMV4系统几乎不能用了，于是重新安装了OMV5系统。之前用的VirtualBox的插件运行虚拟群晖来管理，OMV5就无法安装这个插件了，但是可以在Debian直接安装VirtualBox，并利用远程桌面和命令进行管理。</p>
+<!-- more -->
+<p><strong>2021-03-07: 服务脚本加入等待时间防止开机启动失败</strong></p>
+<h2 id="安装启动">安装启动</h2>
+<p>下载官方适用于Debian10的安装包<br>
+<code>wget https://download.virtualbox.org/virtualbox/6.1.14/virtualbox-6.1_6.1.14-140239\~Debian\~buster_amd64.deb</code></p>
+<p>安装<br>
+<code>sudo dpkg -i virtualbox-6.1_6.1.14-140239\~Debian\~buster_amd64.deb</code></p>
+<p>出现错误提示，部分依赖由于冲突不能安装，这时候使用提示的fix命令安装即可。</p>
+<h2 id="桌面启动管理">桌面启动管理</h2>
+<p>单纯用命令的话太麻烦，安装<code>xfce4</code> 和 <code>vnc4server</code>，实现远程桌面管理<br>
+<code>sudo apt-get -y install xfce4 xrdp vnc4server xfce4-terminal</code></p>
+<p>新建配置文件，指定启动桌面xfce4<br>
+<code>echo xfce4-session&gt;.xsession</code></p>
+<p>重启系统，使用远程桌面连接，选择xvnc。<br>
+<img src="https://taosky.github.io/post-images/1601639714491.png" alt="" loading="lazy"></p>
+<p>登录后可能出现中文字体错误的情况，可以复制Windows系统<code>C:\Windows\Fonts</code>内的中文字体到<code>/usr/local/share/fonts</code>内，重新连接桌面即可。</p>
+<p>桌面右击启动终端，<code>virtualbox</code>启动，即可进行虚拟机管理。<br>
+<img src="https://taosky.github.io/post-images/1601639982594.png" alt="" loading="lazy"></p>
+<h2 id="命令行启动">命令行启动</h2>
+<p>每次开机要远程桌面启动虚拟机很麻烦，可以用命令行模式启动。</p>
+<p>列出虚拟机<code>vboxmanage list vms</code><br>
+<img src="https://taosky.github.io/post-images/1601640246424.png" alt="" loading="lazy"></p>
+<p>无头模式启动（这条命令是持续性的）<br>
+<code>VBoxHeadless -startvm &quot;QunHui&quot;</code></p>
+<p>查看是否启动<code>VBoxManage list runningvms</code><br>
+<img src="https://taosky.github.io/post-images/1601640313299.png" alt="" loading="lazy"></p>
+<p>创建服务'sudo vim /etc/systemd/system/vbox_machine.service'</p>
+<pre><code class="language-service">[Unit]
+Description=Virtualbox QunHui
+After=network.target
+
+[Service]
+User=你的用户名
+ExecStartPre=/bin/sleep 30
+ExecStart=/usr/bin/VBoxHeadless -startvm &quot;QunHui&quot;
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+<p>加载、启动、设为开机启动<br>
+<code>sudo systemctl daemon-reload</code><br>
+<code>sudo systemctl start vbox_machine</code><br>
+<code>sudo systemctl enable vbox_machine</code></p>
+<p>这样虚拟机就搞定了，下一篇会讲下如何用虚拟群晖NFS挂载硬盘进行照片的管理备份。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[NAS系列：Transmission读写权限问题]]></title>
+        <id>https://taosky.github.io/post/transmission-rw-permission/</id>
+        <link href="https://taosky.github.io/post/transmission-rw-permission/">
+        </link>
+        <updated>2020-08-09T06:58:04.000Z</updated>
+        <summary type="html"><![CDATA[<p>目前蜗牛上稳定运行OMV用作NAS，在使用Transmission的时候一直有个权限问题。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>目前蜗牛上稳定运行OMV用作NAS，在使用Transmission的时候一直有个权限问题。</p>
+<!-- more -->
+<h2 id="问题">问题</h2>
+<p>Transmission默认是使用<code>debian-transmission</code>这个用户运行的，下载种子后默认创建的文件夹和文件属于<code>debain-transmission</code>用户和组，权限是744。<br>
+我的情况是，A用户使用Samba去访问的时候应当具有读写权限，B用户仅有读权限，而默认的权限导致只要<code>debian-transmission</code>这个用户是有读写权限的，同组用户和其他用户都只能读。</p>
+<h2 id="解决方法">解决方法</h2>
+<p>网上有很多解决办法，比如修改运行用户，使用你想要有读写权限的用户去运行Transmission。这个办法可以解决问题，但是需要修改服务和配置目录，也只能解决只有一个用户需要读写的情况。还有修改<code>debian-transmission</code>到<code>users</code>组等说法，但是744权限下<code>users</code>组依旧无法访问。其实这后面应该还有一步。</p>
+<p>Transmission配置文件中有一个参数是<code>umask</code>指定默认创建文件的权限，这个是已十进制表示的权限掩码，需要转换一下。比如我想要的权限是<code>775</code>，让用户和用户组都有读写执行的权限，其他用户只有读和执行的权限。掩码就是<code>002</code>，转换成八进制还是<code>2</code>，将<code>umask</code>值设为<code>2</code>即可。可以通过执行<code>echo $(( 8#权限掩码 ))</code>获得。</p>
+<p>然后就是将需要权限的用户加入组<code>debian-transmission</code>，把<code>debian-transmission</code>用户加入组<code>users</code>应该也是可以的，不过这样<code>users</code>组就都有读写权限了。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[收纳箱diy仓鼠（金丝熊）笼]]></title>
+        <id>https://taosky.github.io/post/diy-hamster-cage/</id>
+        <link href="https://taosky.github.io/post/diy-hamster-cage/">
+        </link>
+        <updated>2020-03-08T08:58:42.000Z</updated>
+        <content type="html"><![CDATA[<p><strong>2020.05.24更新</strong>：这个跑轮跑着跑着就歪了，后来买了个支架也不管用，应该是之前烫洞的时候，洞不够平整，造成磨损，越来越歪。换了一个塑料版太极跑轮，两边固定的必固定一边的稳很多。下面放一张近照。<br>
+<img src="https://taosky.github.io/post-images/1590324672962.JPG" alt="" loading="lazy"></p>
+<hr>
+<p>最近关注了一下如何科养金丝熊，据说国外的标准是底面积0.5平方米，国内“公认”也要60基起步。网上搜了一下笼子价格随着面积的增长并不线性，47和60基础笼的价格差别很大，想要更大的笼子，那得200+了。好在了解到了可以把收纳箱改造成仓鼠笼子，便宜够大。</p>
+<h2 id="箱子和材料">箱子和材料</h2>
+<p>首先要找个箱子，网上见的比较多的是这款，就是加高版的床底收纳箱，比较美观，但是矮了点，可能大点的跑轮也装不进去。<br>
+<img src="https://taosky.github.io/post-images/1583659351572.png" alt="" loading="lazy"></p>
+<p>淘宝找了一个<a href="https://detail.tmall.com/item.htm?id=530500415822">250L的收纳箱</a>（80x59x47），感觉比较合适，高是高了点，不容易越狱。<br>
+<img src="https://taosky.github.io/post-images/1583659279572.png" alt="" loading="lazy"></p>
+<p>改造成笼子，主要是给收纳箱加几个窗子，也方便固定跑轮、水壶什么的。本以为要自己找铁丝网做，已经有养鼠人士开了<a href="https://store.taobao.com/shop/view_shop.htm?user_number_id=2376209210">网店专卖diy套装</a>，包括亚克力窗、铁丝网、亚克力门及各种工具。</p>
+<p>我选了两个30x12的铁丝网铁丝网后窗、40x27的铁丝网天窗和可以装水壶的亚克力侧窗。由于箱子比较大，前门我自己买了个<a href="https://item.taobao.com/item.htm?id=609593122378">定制的亚克力</a>（60cmx30cm）。</p>
+<p>我这里还参考<a href="http://tieba.baidu.com/p/6123164762?pn=1">贴吧的帖子</a>买了一个<a href="https://item.taobao.com/item.htm?spm=a1z09.2.0.0.6ba02e8daEdeIZ&amp;id=604673814166&amp;_u=a1lgt5a73d31">燕窝盒</a>和<a href="https://item.taobao.com/item.htm?spm=a1z09.2.0.0.6ba02e8daEdeIZ&amp;id=541188114328&amp;_u=a1lgt5a7f08b">轴承</a>用来DIY跑轮。<br>
+<img src="https://taosky.github.io/post-images/1584534132939.png" alt="" loading="lazy"></p>
+<h2 id="改造">改造</h2>
+<p>先讲一下这个跑轮，这个燕窝盒的直径是25cm，如果是这么大的跑轮...好贵。燕窝盒改成跑轮很简单，就是用电烙铁在燕窝盒底部开一个洞，用来固定轴承。实测用电烙铁融化塑料烟雾弥漫、难闻至极，建议在空旷的地方搞。帖子里说要用钢尺铲平，实际上不太好操作，一凉下来塑料又凝固了。最后也不是很平，转动起来会有一点偏移，建议垫一些纸什么的，轴承盖子不容易滑动，总体还不错，转动也很顺畅 。</p>
+<p>箱子开窗也就是挖洞再固定，不过比较麻烦。首先要确定开窗位置，用笔画出框架边缘需要留一公分，不然窗子没法固定，建议别像我一样用油性笔，后面可能会有残留的擦不掉（用酒精可以去除）。<br>
+<img src="https://taosky.github.io/post-images/1584369049078.jpg" alt="" loading="lazy"></p>
+<p>接着用钢尺配合勾刀划出凹痕，多化几遍就可以划穿，这一步十分费体力。靠近边缘的地方不好掌握，容易划过，可一在勾刀划出的痕迹上用美工刀或者钢尺慢慢划，开完口边缘会很毛糙，可以用美工刀休整一下。<br>
+<img src="https://taosky.github.io/post-images/1584533513000.jpg" alt="" loading="lazy"><br>
+<img src="https://taosky.github.io/post-images/1584533636109.jpg" alt="" loading="lazy"><br>
+接着就可以安装窗子了，铁丝网的话先在边缘铁丝两边用电烙铁打洞，亚克力需要先标记一下再打洞，电烙铁融化塑料后塑料会粘连在电烙铁上，要用废纸废塑料什么的清理一下电烙铁，不然会一直冒黑烟，打第二个洞也会粘在上面导致不平整。<br>
+<img src="https://taosky.github.io/post-images/1584533858049.png" alt="" loading="lazy"></p>
+<p>接着用螺丝或扎带固定，顶上的窗可以安装在外侧，仓鼠一般也上不去，里面的要安装在里侧，据说漏出塑料边就会被啃烂...<br>
+<img src="https://taosky.github.io/post-images/1584533983053.png" alt="" loading="lazy"></p>
+<h2 id="成品">成品</h2>
+<p>忽略掉箱子外面，看着就还不错<br>
+<img src="https://taosky.github.io/post-images/1584370577398.jpg" alt="" loading="lazy"><br>
+4块包邮的星星灯，还是蛮亮的，夜间照明没问题<br>
+<img src="https://taosky.github.io/post-images/1584370586063.jpg" alt="" loading="lazy"><br>
+<img src="https://taosky.github.io/post-images/1584370600163.jpg" alt="" loading="lazy"></p>
+<p><del>什么？你问仓鼠在哪，我还没有仓鼠😅</del></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[N1 媒体服务器Docker镜像]]></title>
+        <id>https://taosky.github.io/post/n1-media-server-docker/</id>
+        <link href="https://taosky.github.io/post/n1-media-server-docker/">
+        </link>
+        <updated>2020-03-06T15:29:05.000Z</updated>
+        <summary type="html"><![CDATA[<p>在最早写的<a href="https://mou.science/post/N1/">这篇N1折腾文章</a>中，通过Entware环境安装了各种软件，实现下载浏览等媒体服务。经过上次折腾Docker下安装OpenWRT之后，就想是不是可以把这些软件做成一个Docker镜像方便使用，学习了一下不是很复杂，做成了一个镜像，特此分享。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>在最早写的<a href="https://mou.science/post/N1/">这篇N1折腾文章</a>中，通过Entware环境安装了各种软件，实现下载浏览等媒体服务。经过上次折腾Docker下安装OpenWRT之后，就想是不是可以把这些软件做成一个Docker镜像方便使用，学习了一下不是很复杂，做成了一个镜像，特此分享。</p>
+<!-- more -->
+<p><strong>2020.03.30更新</strong>：</p>
+<ol>
+<li>调整挂载路径，从<code>/root/exmedia</code> 到<code>/media/exmedia</code>。</li>
+<li>新增苹果afp服务，可在Finder中连接。</li>
+</ol>
+<h2 id="简介">简介</h2>
+<p>镜像地址：https://hub.docker.com/r/taoskycn/n1-media-server</p>
+<p>包含 <code>Caddy</code>,<code>FileBrowser</code>,<code>Transmission</code>，提供“BT/PT下载”，“HTTP文件浏览”，“WebDAV”，“文件管理” 服务。WebDAV可配合Potplayer, Nplayer, Kodi等软件用于播放视频。</p>
+<p>先上几张效果图（因为把原图搞丢了，所以有张大妈的水印😓）。</p>
+<p><img src="https://taosky.github.io/post-images/1583752129973.jpg" alt="" loading="lazy"><br>
+<img src="https://taosky.github.io/post-images/1583752136253.jpg" alt="" loading="lazy"><br>
+<img src="https://taosky.github.io/post-images/1583752150853.jpg" alt="" loading="lazy"></p>
+<h2 id="镜像使用">镜像使用</h2>
+<p>首先要有Docker，如果是CoreELEC可以直接在插件里面安装。</p>
+<h3 id="安装启动">安装启动</h3>
+<ol>
+<li>拉取镜像（之前反映有官方仓库下载慢的问题，这里用了ustc的mirror）<code>    docker pull docker.mirrors.ustc.edu.cn/taoskycn/n1-media-server:0.1</code></li>
+<li>创建并后台运行容器（<strong>“/var/media/N”为外接存储路径，根据情况自行修改</strong>） <code>docker run -it -d --name N1 -p 1001-1006:1001-1006 -p 51413:51413 -p 548:548 --privileged=true --mount type=bind,source=/var/media/N,target=/media/exmedia taoskycn/n1-media-server:0.2 /bin/ash</code></li>
+<li>进入容器 <code>docker exec -it N1 /bin/ash</code></li>
+<li>启动各个服务<code>/root/start.sh</code> 回车</li>
+<li>如需停止 <code>/root/stop.sh</code></li>
+<li>退出容器 <code>exit</code></li>
+</ol>
+<h3 id="访问和设置">访问和设置</h3>
+<ul>
+<li>
+<p>Transmission Web：<code>http://&lt;N1的IP&gt;:1001</code>，账号密码<code>transmission</code>:<code>transmission</code>，已更换WebUI，配置文件位于<code>/root/.config/transmission-daemon/settings.json</code>。</p>
+</li>
+<li>
+<p>Caddy 文件浏览：<code>http://&lt;N1的IP&gt;:1002</code>，账号密码<code>caddy</code>:<code>caddy</code>，显示外接存储下的<code>download</code>目录，配置文件位于<code>/etc/Caddyfile</code>。</p>
+</li>
+<li>
+<p>Caddy WebDAV：<code>http://&lt;N1的IP&gt;:1002/webdav</code>，账号密码<code>caddy</code>:<code>caddy</code>，显示外接存储下的<code>download</code>目录。</p>
+</li>
+<li>
+<p>FileBrowser文件管理：<code>http://&lt;N1的IP&gt;:1003</code>，账号密码<code>caddy</code>:<code>caddy</code>，可在Web界面修改各项设置。</p>
+</li>
+<li>
+<p><strong>（新增）</strong> AFP服务：在Mac OS X的Finder下<code>Command + K</code> 输入<code>afp://192.168.2.107</code> 点击连接，默认账号密码<code>afp</code>:<code>afp</code>，可通过<code>passwd afp</code>进行密码修改，该服务端口为<code>548</code>，外网访问需映射该端口。</p>
+</li>
+<li>
+<p><strong>如需外网访问，使用路由器设置端口映射即可，考虑到安全因素，建议修改密码后操作</strong></p>
+</li>
+</ul>
+<h3 id="注意事项">注意事项</h3>
+<ul>
+<li><code>docker run</code>会映射端口，运行前确认端口未被使用。</li>
+<li><code>51413</code>为transmission交换数据的端口，需要映射到公网（没有好像会影响上传）</li>
+<li>如需手动修改Transmission配置文件，先退出进程。</li>
+<li>如外网访问各服务问题，可能是运营商屏蔽了特殊端口，可尝试更换端口。</li>
+</ul>
+<h2 id="webdav配置">WebDAV配置</h2>
+<h3 id="potplayer">Potplayer</h3>
+<p>播放列表-新建专辑(注意：由于Windows文件命名限制问题，可能有包含特殊符号的无法打开)<br>
+<img src="https://taosky.github.io/post-images/1583752459172.jpg" alt="" loading="lazy"></p>
+<h3 id="nplayer">NPlayer</h3>
+<p>网络-新建服务器-WebDAV<br>
+<img src="https://taosky.github.io/post-images/1583752474736.jpg" alt="" loading="lazy"></p>
+<h3 id="kodi">Kodi</h3>
+<p>进入文件区-添加视频-浏览-添加网络位置<br>
+<img src="https://taosky.github.io/post-images/1583752496755.jpg" alt="" loading="lazy"></p>
+<h2 id="总结">总结</h2>
+<p>最小化满足了媒体服务器的需求，并且具有一定的扩展性，比如玩PT的可以配合浏览器插件远程下载，WebDAV也可以在各个终端使用，也可以分享给别人远程浏览（上行带宽要够大）。</p>
+<p>还有一些功能没有添加，如Aria2，因为我个人没有这种需求所以暂未考虑；还有Mac上WebDAV必须缓存完才能播放，之前是用的Netatalk做的一个afp（苹果文件传输）服务器，<del>但是这个东西由于目录权限问题（很神奇），也没有成功，有研究过的希望能分享一下。</del> 0.2版本已增加。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[N1盒子CoreELEC+旁路由]]></title>
+        <id>https://taosky.github.io/post/n1-coreelec-docker-openwrt/</id>
+        <link href="https://taosky.github.io/post/n1-coreelec-docker-openwrt/">
+        </link>
+        <updated>2020-02-04T14:21:20.000Z</updated>
+        <summary type="html"><![CDATA[<h2 id="前情提要">前情提要</h2>
+<p>上一篇文章中刷了YYF固件（Android），安装Kodi用于看片，安装Entware环境用于PT挂机和媒体服务器。经评论区提醒Android下的Kodi画质不如CoreELEC下的，而且CoreELEC是纯精简版Linux，相比Android没有中间商赚取差价，效率更高。只是装不了Android APP了，影响不大，遂折腾。</p>
+]]></summary>
+        <content type="html"><![CDATA[<h2 id="前情提要">前情提要</h2>
+<p>上一篇文章中刷了YYF固件（Android），安装Kodi用于看片，安装Entware环境用于PT挂机和媒体服务器。经评论区提醒Android下的Kodi画质不如CoreELEC下的，而且CoreELEC是纯精简版Linux，相比Android没有中间商赚取差价，效率更高。只是装不了Android APP了，影响不大，遂折腾。</p>
+<!-- more -->
+<p>至于旁路由，能够更充分的利用N1，主要功能是科学和屏蔽广告，因为是OpenWrt要再加点什么功能也比较方便。</p>
+<h2 id="coreelec">CoreELEC</h2>
+<p>CoreELEC是一个专为Kodi打造的精简LInux发行版，据说是专门优化的，播放效果和兼容性比Android上的Kodi好很多，还具有一些影音方面的高级功能，比较适合影视爱好者。</p>
+<h3 id="写入u盘">写入U盘</h3>
+<p>首先N1需要降级才能用各种固件，这部分请参考别的文章。</p>
+<p>CoreELEC镜像使用恩山论坛<a href="https://www.right.com.cn/forum/thread-331363-1-1.html">M大的版本</a>，已经对N1做好了适配，目前更新到<code>9.2</code>。为了后面使用OpenWrt，需要安装<code>9.0.2</code>版（因为需要更新内核，只找到<code>9.0.1</code>和<code>9.0.2</code>有适配的新内核）</p>
+<p>首先通过Etcher写入镜像到u盘，N1插上U盘重启，默认就会引导U盘内的系统，第一次启动可能时间长一些。<br>
+<img src="https://taosky.github.io/post-images/1581081165449.png" alt="" loading="lazy"><br>
+这时候需要一个鼠标，启动后要关闭自动更新（因为固件是修改适配N1的，更新官方的就开不出来了），进行语言、网络等设置。</p>
+<p>具体使用和App版的Kodi并没有区别。<br>
+<img src="https://taosky.github.io/post-images/1581081215165.png" alt="" loading="lazy"></p>
+<h3 id="写入emmc">写入EMMC</h3>
+<p>另一种方式是写到EMMC（内部存储），这样就替换了原来的Android系统。</p>
+<p><code>ssh root@N1的IP</code>登陆系统，默认密码“coreelec”。</p>
+<p>执行<code>/flash/installtoemmc</code>执行写入EMMC的命令。(需要注意的是<code>9.0.2</code>以上版本使用<code>/flash/installtoemmc</code>，旧版使用<code>/flash/installtointernal</code>）</p>
+<p>等执行完成重启并拔掉U盘就可以了。</p>
+<pre><code>如果你写到eMMC后，想刷回安卓系统，其实很简单就可以刷回W大的官改固件，只需按照刷官改的方法，准备好usb burning tool，加载固件，点击“开始”刷机，然后ssh登录到CoreELEC系统，执行：reboot update命令，N1会自动重启，然后进入刷机模式，等待刷机完成即可。
+</code></pre>
+<h3 id="entware">Entware</h3>
+<p>安装非常简单 <code>installentware</code>,安装完成后重启，<code>opkg update</code>更新软件源，安装上Transmission等软件就可以实现之前在安卓下的下载机和媒体服务器了（详见前一篇）。</p>
+<h3 id="蓝牙遥控问题">蓝牙遥控问题</h3>
+<p><img src="https://taosky.github.io/post-images/1581074490143.png" alt="" loading="lazy"><br>
+如果是同款遥控器，需要用到<a href="https://www.right.com.cn/forum/forum.php?mod=viewthread&amp;tid=530795">这个帖子</a>的适配文件，复制到<code>/storage/.kodi/userdata/keymaps/</code>路径下，重启N1即可使用。</p>
+<p>不过有个Bug，在输入界面会出现自动输入‘i’的情况，导致无法正常输入，不过论坛里的大神已经在帖子下面回复了解决办法。</p>
+<p>在系统-插件里面按‘system tools’这个插件，然后SSH登陆。<br>
+执行</p>
+<pre><code class="language-bash">systemctl stop kodi
+systemctl stop eventlircd
+evtest
+</code></pre>
+<p>接着<code>vi  ~/.config/hwdb.d/99-iprc1000.hwdb</code>修改文件为（注意格式，有空格）</p>
+<pre><code>#IPRC1000 remote
+evdev:input:b*v0A5Cp8502*
+  KEYBOARD_KEY_7000c=unknown
+</code></pre>
+<p>然后执行</p>
+<pre><code class="language-bash">systemd-hwdb update
+udevadm trigger
+reboot
+</code></pre>
+<p>重启后就可以正常使用了，不过还有个问题是遥控器蓝牙长时间不用断开后，再次按键需要很久才能连上使用，在Android下没有这个问题。。。</p>
+<h2 id="旁路由">旁路由</h2>
+<h3 id="替换内核">替换内核</h3>
+<p>由于CoreELEC自带内核过于精简，缺少某些功能（IPSET），导致OpenWRT下包括科学等一些插件启动不了，有人做了新的内核，只要简单地替换就可以了。（<a href="https://hub.docker.com/r/kanshudj/n1-openwrtgateway">这个Docker镜像的说明中</a>提供了一种不用替换内核添加IPSET功能的办法，尚未尝试）</p>
+<p>下载<a href="https://github.com/Taosky/N1-Backup/raw/master/CoreELEC_9.02_new_kernel/kernel.img">新的内核</a>(9.0.2版)</p>
+<ul>
+<li>
+<p>如果是U盘启动，直接替换U盘下<code>/flash/kernel.img</code>即可。</p>
+</li>
+<li>
+<p>如果是EMMC启动，先把文件传到N1，执行<code>mount -o rw,remount /flash</code>挂载分区为可写，再替换<code>/flash/kernel.img</code>。</p>
+</li>
+</ul>
+<p>如果已经装了新版本的CoreELEC，并且配置了一堆东西不想重新装旧版（像我一样），也是有办法的。下载恩山论坛<a href="https://www.right.com.cn/forum/thread-331363-1-1.html">M大帖子</a>里面的“升级脚本”，没错，升级脚本是可以降级的。。。原理就是替换system分区和内核。然后按照上面写的同样操作就可以了。</p>
+<p>不过降级换内核后，我一连接蓝牙遥控器就卡死，只能用App控制了，不知道是内核的问题还是降级的问题。。。</p>
+<h3 id="docker-和openwrt安装">Docker 和OpenWRT安装</h3>
+<p>Docker是一个容器，有些东西跑一下需要一堆配置，用Docker就可以直接拉取别人做好的镜像，简单设置就可以使用，而且有虚拟化的功能，OpenWRT就是独立安装在这样一个容器下的。<br>
+<img src="https://taosky.github.io/post-images/1581082246881.png" alt="" loading="lazy"></p>
+<p>在CoreELEC下安装比较简单，在Kodi插件-服务程序下可以找到Docker，由于网络原因特别慢，可能需要等上一会儿或是多试几次。</p>
+<p>安装后就可以SSH登陆，<code>docker pull kanshudj/n1-openwrtgateway</code>抓取镜像（这个镜像还有个R9版本，功能更多），这一步可能也要很长时间，取决于网络。</p>
+<p>开启网卡混杂模式<br>
+<code>ip link set eth0 promisc on</code></p>
+<p>创建Macvlan复用网卡，用于虚拟主机接入局域网，这里的gateway和subnet根据自己的网段设置<br>
+<code>docker network create -d macvlan --subnet=192.168.2.0/24 --gateway=192.168.2.1 -o parent=eth0 macnet</code></p>
+<p>创建名为op的OpenWRT容器<br>
+<code>docker run --name op --restart always -d --network macnet --privileged kanshudj/n1-openwrtgateway /sbin/init</code></p>
+<p>创建成功后，启动容器的bash进行设置<br>
+<code>docker exec -it op /bin/bash</code></p>
+<p>修改网关IP等信息<code>vi /etc/config/network</code><br>
+<img src="https://taosky.github.io/post-images/1581082964197.png" alt="" loading="lazy"></p>
+<p>停用防火墙（之前没有这么操作，客户端一直连不上网）<br>
+<code>/etc/init.d/firewall disable&amp;&amp;/etc/init.d/firewall stop</code></p>
+<p>重启网络 <code>/etc/init.d/network restart</code></p>
+<p><code>exit</code>退出到CoreELEC环境下后，重启容器<code>docker restart op</code></p>
+<p>这时候尝试打开<code>http://192.168.2.20</code>（改成自己设置的），出现OpenWRT登陆界面，默认密码是“password”<br>
+<img src="https://taosky.github.io/post-images/1581083208136.png" alt="" loading="lazy"></p>
+<h3 id="客户端设置">客户端设置</h3>
+<p>成功配置并运行OpenWRT后，在客户端设置网关和DNS为容器的IP，我设置的是<code>192.168.2.20</code>，如能成功上网，即配置成功。<br>
+<img src="https://taosky.github.io/post-images/1581083430670.png" alt="" loading="lazy"><br>
+<img src="https://taosky.github.io/post-images/1581083437462.png" alt="" loading="lazy"></p>
+<h3 id="旁路由功能">旁路由功能</h3>
+<ol>
+<li>自带插件<br>
+这个固件默认只有DDNS、广告过滤和科学功能，在服务中可以配置启用，这个版本的科学功能只支持“绕过大陆IP”模式，如需要“某list模式”和更多的功能，可以使用<code>kanshudj/n1-openwrtgateway:r9.10.1</code>这个镜像。</li>
+</ol>
+<figure data-type="image" tabindex="1"><img src="https://taosky.github.io/post-images/1581083706513.png" alt="" loading="lazy"></figure>
+<p>科学功能使用的PDNSD默认使用OpenDNS，有些域名如“sogou.com”会解析不了，修改成阿里和腾讯的DNS服务器即可。<code>vi /etc/pdnsd.conf</code>找到<code>label = &quot;opendns&quot;;</code> 将下面的ip改成<code>223.5.5.5, 119.29.29.29</code>。</p>
+<ol start="2">
+<li>插件安装<br>
+我这里还加了一个解除黄逸云锁定的功能，是用的<a href="https://github.com/project-openwrt/luci-app-unblockneteasemusic">这个插件</a>。</li>
+</ol>
+<p>这个插件依赖<code>curl</code>和<code>node</code>，先安装一下<code>opkg update &amp;&amp; opkg install curl &amp;&amp; opkg install node </code></p>
+<p>然后下载插件包<br>
+<code>wget https://github.com/project-openwrt/luci-app-unblockneteasemusic/releases/download/v2.7-1/luci-app-unblockneteasemusic_2.7-1_all.ipk</code></p>
+<p>安装插件<code>opkg install luci-app-unblockneteasemusic_2.7-1_all.ipk</code></p>
+<p>这个插件有个问题就是在Web界面设置的时候不能启动，需要手动执行<code>/etc/init.d/unblockneteasemusic start</code>启动。可以在系统-启动项-本地启动脚本中添加这条开机自动执行。</p>
+<p>默认情况下客户端会自动生效，IOS和MAC需要安装<a href="https://raw.githubusercontent.com/nondanee/UnblockNeteaseMusic/master/ca.crt">证书</a>并信任。</p>
+<figure data-type="image" tabindex="2"><img src="https://taosky.github.io/post-images/1581084472935.png" alt="" loading="lazy"></figure>
+<h3 id="体验">体验</h3>
+<p>需要的设备设置网关，出了问题别的设备也能正常使用。和原来一样在局域网中，Homekit等各种服务也能正常使用。<br>
+测试了一下，带宽没什么损失，手机上玩游戏也没有跳ping，延迟和直连路由器差不多，看来N1的性能跑这几个小东西还是绰绰有余。<br>
+<img src="https://taosky.github.io/post-images/1581084818446.jpeg" alt="" loading="lazy"></p>
+<p>还有就是绕过国内IP模式的话，BT/PT的国外流量也会被代理，其他的东西也多多少少会受影响，后面可能会换个其它方式吧。</p>
+<h2 id="参考">参考</h2>
+<p>https://post.smzdm.com/p/a25r675q/<br>
+https://zorz.cc/post/n1-docker-openwrt.html<br>
+https://www.right.com.cn/forum/thread-740477-1-1.html<br>
+https://www.gitmemory.com/issue/kob/N1/2/509879330<br>
+https://www.right.com.cn/forum/thread-331363-1-2.html<br>
+https://www.gitmemory.com/issue/kob/N1/2/509879330</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[素人装机及黑果安装配置]]></title>
+        <id>https://taosky.github.io/post/custom-pc-and-hackintosh/</id>
+        <link href="https://taosky.github.io/post/custom-pc-and-hackintosh/">
+        </link>
+        <updated>2019-12-18T11:35:09.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>2022-07-30更新：</strong><br>
+此前已更换<a href="https://github.com/GeQ1an/MSI-B360M-MORTAR-HACKINTOSH-OPENCORE-EFI">OpenCore EFI配置</a><br>
+EFI分区问题，直接在新建一个FAT32的分区，起名EFI，放入EFI引导，也能被主板识别。</p>
+<hr>
+<p>装机的念头由来已久，虽然本子还能用，平常也就是看看片，打打撸，不过人就总是有一些尝试的欲望，虽然事后坑索然无味，还是会去追求短暂的快乐。从618到618再到双十一，终于在这次双十一成功装机......</p>
+]]></summary>
+        <content type="html"><![CDATA[<p><strong>2022-07-30更新：</strong><br>
+此前已更换<a href="https://github.com/GeQ1an/MSI-B360M-MORTAR-HACKINTOSH-OPENCORE-EFI">OpenCore EFI配置</a><br>
+EFI分区问题，直接在新建一个FAT32的分区，起名EFI，放入EFI引导，也能被主板识别。</p>
+<hr>
+<p>装机的念头由来已久，虽然本子还能用，平常也就是看看片，打打撸，不过人就总是有一些尝试的欲望，虽然事后坑索然无味，还是会去追求短暂的快乐。从618到618再到双十一，终于在这次双十一成功装机......</p>
+<!-- more -->
+<figure data-type="image" tabindex="1"><img src="https://taosky.github.io/post-images/custom-pc-and-hackintosh/0.png" alt="" loading="lazy"></figure>
+<h2 id="硬件">硬件</h2>
+<p>装机当然要先确定硬件配置，目标是搞个黑果子，顺便能打打游戏，预算四五千。<br>
+首先是阵营的选择，现在好像流行AU + N卡，不过黑果子冇的选，只能是按摩店的显卡（10系以下N卡似乎也可以搞，要新要完美还是A卡吧）；CPU用按摩店的似乎性价比高，不过黑果比较麻烦，据说游戏性能也不如Intel，所以还是选择Intel平台。</p>
+<h3 id="cpu">CPU</h3>
+<p>确定了Intel平台，CPU的选择其实很容易，要打游戏选择最主流的<strong>i5 9400F</strong>，不带核显还能省点钱。（核显涉及到黑苹果硬解的问题，之前的OS X系统即使有独显，没有核显还是不能硬解，而10.14.5 以上版本已经支持独显直接硬解了，所以可以直接选择没有核显的CPU。）</p>
+<h3 id="显卡">显卡</h3>
+<p>显卡的选择其实有点尴尬，需要蓝宝石（苹果御用）或迪兰的卡。RX560XT玩游戏不够；RX570、580矿卡泛滥，已买不到全新的卡；580有个新的阉割版（2048SP）基本不能用于黑苹果（据说可以刷vbios，当然这就超出硬件素人的能力范围了）；RX5500尚未发售......最终能选择的只有<strong>蓝宝石RX590</strong>，这个卡虽然性价比高，比几乎同性能的GTX1660便宜了200左右，但是根据网上的测试功耗比N卡高很多，后面我也自己测了一下，没有网上那么夸张。</p>
+<h3 id="电源">电源</h3>
+<p>有了CPU和显卡就可以确定电源额定功率了，显卡建议电源600w以上，实际上550w就够了（要是1660只要450w，按摩店显卡虽然便宜点，但是电源要贵一点），品牌型号选择风评较好的酷冷GX系列。</p>
+<h3 id="主板">主板</h3>
+<p>首先要关注哪些主板黑果子没问题，最简单的就是去看<a href="https://blog.daliansky.net/Hackintosh-long-term-maintenance-model-checklist.html">Hackintosh黑苹果长期维护机型整理清单<br>
+</a>，找同主板的没什么问题的配置就可以了（CPU和显卡都是免驱的，所以关系不大）。我选的是<strong>微星360M 迫击炮</strong>，这款口碑和销量都不错，群里大佬用了都说好。</p>
+<h3 id="硬盘">硬盘</h3>
+<p>第一块硬盘好像都选NVME协议的M.2接口固态硬盘，根据预算在主流的里面选一个就行，我用的<strong>海康威视C2000 PRO 512G</strong>，十年质保（有写入量要求，感觉和车子质保一样），有点后悔没有直接买1T的，更便宜点，512G双系统+装游戏确实有点捉襟见肘，要再加一块硬盘就比较蛋疼了......</p>
+<h3 id="内存">内存</h3>
+<p>2666频率，哪个便宜买哪个，用的**十铨火神D4 2666 **，2666频率需要在BIOS中开启XMP。</p>
+<h3 id="散热器">散热器</h3>
+<p>就我知道几款性价比高的散热器里面选一个，酷冷T400、大镰刀赤兔马（京东没得卖）、玄冰400，然后我搞了<strong>玄冰400</strong>，对于装机素人来说太难了......</p>
+<h3 id="机箱">机箱</h3>
+<p>开始想用刁丝博，张大妈转了一圈，减钱减到先马平头哥，后来看中了爱国者YOGO，不过好看的机箱散热好像都一般，最后还是<strong>平头哥M1</strong>。</p>
+<h3 id="机箱风扇">机箱风扇</h3>
+<p>平头哥送了一把光环5 LED风扇，不是很喜欢光污染（当然也喜欢不起），自己买了两把<strong>先马游戏风暴风扇</strong></p>
+<h3 id="配置详情">配置详情</h3>
+<table>
+<thead>
+<tr>
+<th>商品</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>i5-9400F盒装</td>
+</tr>
+<tr>
+<td>B360M MORTAR迫击炮</td>
+</tr>
+<tr>
+<td>蓝宝石 RX590 极光</td>
+</tr>
+<tr>
+<td>酷冷至尊 GX550</td>
+</tr>
+<tr>
+<td>海康威视 C2000 PRO</td>
+</tr>
+<tr>
+<td>十铨 火神 DDR4 2666 8G x2</td>
+</tr>
+<tr>
+<td>九州风神 玄冰400</td>
+</tr>
+<tr>
+<td>先马 平头哥M1 +先马 光环5风扇</td>
+</tr>
+<tr>
+<td>先马 游戏风暴风扇 x2</td>
+</tr>
+<tr>
+<td>DW1820A + PCI-E转接板（后加）</td>
+</tr>
+<tr>
+<td>ID-COOLING PL-12025风扇（后装）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="安装">安装</h2>
+<p>应该提前看好教程，边看边装有点慢，不过总体还算顺利。</p>
+<h3 id="散热器安装">散热器安装</h3>
+<p>不愧是反人类400，装了半天，只能是大力出奇迹，把一边扣上，另一边使劲按，不得不说，CPU和主板的还是很牢靠的，不过可能不会再去拆了。。。</p>
+<figure data-type="image" tabindex="2"><img src="https://taosky.github.io/post-images/custom-pc-and-hackintosh/1.jpeg" alt="" loading="lazy"></figure>
+<h3 id="风扇安装">风扇安装</h3>
+<p>风扇侧面有标识提示风向；风扇是没有螺纹的，直接拧就行了；风吹方向用手判断不可靠，要用个纸片测试（装完测试的时候还以为风扇装反了）</p>
+<p>之后又安装了一个ID-COOLING PL-12025（风量大又便宜），顺便学习了一下风扇调速的知识，三针风扇接主板后可以使用DC调速（改变电压），四针风扇接主板后可以通过PWM调速（发送信号）。在BIOS中设置智能模式就可以了。</p>
+<figure data-type="image" tabindex="3"><img src="https://taosky.github.io/post-images/custom-pc-and-hackintosh/bios%E9%A3%8E%E6%89%87.png" alt="" loading="lazy"></figure>
+<h3 id="网卡安装">网卡安装</h3>
+<p>由于需要黑果，后来去淘宝整了一块<strong>DW1820A</strong>。<br>
+蓝牙需要接到主板的USB口，接口有限，只能把前面板的USB2.0口的线拔了，前面板2.0其实也用不到，问题不大。</p>
+<p>插到PCIE后灯也是亮的，看起来可以用。开机却只能看到蓝牙，手动装驱动后也并没有识别，问了大佬才知道原来这块主板的<strong>PCIE_4和M2_2冲突</strong>，把固态硬盘换了个口终于能用了。另外<strong>SATA2和M2_1也冲突</strong>，暂时没用到SATA2，影响不大。</p>
+<h3 id="机箱问题">机箱问题</h3>
+<p>一分货一分钱，机箱虽然还行，给的螺丝就不太行了，后面板固定显卡和网卡的螺丝根本拧不进去，只能稍微固定上，硬盘螺丝也和硬盘上的孔位不太匹配。</p>
+<h2 id="黑果子">黑果子</h2>
+<h3 id="系统安装">系统安装</h3>
+<p>安装其实和Windows差不多，就是镜像写到U盘然后安装，主要是挑硬件（驱动），如果没什么兼容问题，安装很简单，网上详细的教程一大堆，捡重点讲一下。</p>
+<ol>
+<li>在<a href="https://blog.daliansky.net/">黑果小兵的部落格</a>下载最新的<code>.dmg</code>镜像，用<code>etcher</code>等工具写到U盘里。</li>
+<li>找到自己相似硬件的黑苹果EFI配置文件（Clover驱动），可以在<a href="https://blog.daliansky.net/Hackintosh-long-term-maintenance-model-checklist.html">Hackintosh黑苹果长期维护机型整理清单</a>里面找找，使用下载好的EFI配置文件<strong>覆盖<code>U盘ESP分区-EFI-Clover</code>文件夹</strong>，这一步是用现成的驱动防止安装过程出错。</li>
+<li>启动电脑，U盘引导，第一次启动需要给磁盘分区，然后就一路下一步。等<strong>再次重启后，依然需要U盘引导</strong>，因为新安装在磁盘上的Clover是没有加载的驱动的，可能没办法正常启动。选择安装MAC的分区后就可以正常启动了。</li>
+<li>启动后需要做的就是把黑苹果EFI配置文件<strong>覆盖到磁盘的引导分区中</strong>（和覆盖U盘的一样），这样才能通过磁盘正常引导启动。这里需要借助一个应用：**<a href="https://mackie100projects.altervista.org/apps/cloverconf/CCG/builds-data/CCG.zip">Clover Configurator</a> **,打开后找到<code>Mount EFI</code>，然后找到U盘和系统磁盘，分别挂载，把U盘分区内的<code>EFI-Clover</code>文件夹覆盖到到磁盘EFI分区内的<code>EFI-Clover</code>，做完这一步基本就可以正常使用了。</li>
+</ol>
+<figure data-type="image" tabindex="4"><img src="https://taosky.github.io/post-images/custom-pc-and-hackintosh/5.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://taosky.github.io/post-images/custom-pc-and-hackintosh/6.png" alt="" loading="lazy"></figure>
+<h3 id="生成三码">生成三码</h3>
+<p>所谓三码就是三个序列号，由于网上的EFI很多人同时用，序列号也是一样的，有时候会造成用不了Facetime、iMessage等功能。使用之前挂载分区用的<strong>Clover Configurator生成随机的三码</strong>，参考<a href="https://sleele.com/2019/03/21/smbios/">这篇文章</a>。config.plist文件位于EFI分区，需要先挂载，建议备份。生成序列号的时候选择机型需要和自己使用的EFI对应机型一致。</p>
+<h3 id="hidpi">HIDPI</h3>
+<p>说白了就是Windows上的缩放功能，通过缩放系统UI来适应不同分辨率。由于苹果系统只适配自家的机型，所以只有4K以上具有这个缩放功能。通过仿冒可以在任意分辨率下开启这个功能，<strong>一键脚本<a href="https://github.com/xzhih/one-key-hidpi">one-key-hidpi</a></strong>（其实只有2K需要这个功能，1080P用界面会很大，内容也变少）。</p>
+<h3 id="colver界面键盘失灵问题">Colver界面键盘失灵问题</h3>
+<p>间歇出现在Colver界面键盘无法使用的问题，进入系统后也无法识别。试了几次发现不是接口问题，用了PS/2转接头（PS/2需驱动）后解决，但是按键有偏差不好用。后来发现<strong>BIOS里面默认开启了一个和USB相关的选项</strong>，关闭后没有再出现这个情况。</p>
+<h3 id="无线和蓝牙">无线和蓝牙</h3>
+<p>能用的网卡并不多，拆机卡一般比较贵，所以我选择了前面提到的DW1820A，由于是NGFF M.2-WIFI的接口，要插到PCI-E上还要加个转接卡，总共90多，也比拆机卡便宜很多了。这张卡比较玄，部分版本能够在黑果下使用，我用的是w3T3  A00 这个版本的</p>
+<ul>
+<li><a href="https://item.taobao.com/item.htm?id=585419973628">网卡链接</a></li>
+<li><a href="https://item.taobao.com/item.htm?id=573533272993">转接卡链接</a></li>
+</ul>
+<figure data-type="image" tabindex="6"><img src="https://taosky.github.io/post-images/custom-pc-and-hackintosh/4.jpeg" alt="" loading="lazy"></figure>
+<p>驱动安装参考黑果小兵的<a href="https://blog.daliansky.net/DW1820A_BCM94350ZAE-driver-inserts-the-correct-posture.html">DW1820A/BCM94350ZAE/BCM94356ZEPA50DX插入的正确姿势</a>，WIFI默认已经驱动了，只要看蓝牙驱动就好了。</p>
+<h2 id="windows">Windows</h2>
+<h3 id="系统安装-2">系统安装</h3>
+<p>毕竟也是要打游戏的，还是需要双系统。<br>
+以下为单硬盘安装，双硬盘应该简单一点，直接在另一块硬盘安装就好了。主要是参考<a href="https://www.bilibili.com/video/av40466527/">这个视频</a>，已经讲得很详细了，照着做没啥问题。</p>
+<p>下载系统镜像 可以用微软官方的<a href="https://www.microsoft.com/zh-cn/software-download/windows10">媒体创建工具</a>，运行后选择生成ISO文件。</p>
+<figure data-type="image" tabindex="7"><img src="https://taosky.github.io/post-images/custom-pc-and-hackintosh/%E5%88%86%E5%8C%BA.JPG" alt="" loading="lazy"></figure>
+<p>关于安装过程，一通折腾都是因为引导，上面是一张安装完成后的分区图，在Windows安装过程中如果引导分区在第三分区，重启时会报错，所以需要在安装前，将Windows引导放到第一分区（备份好原来的文件），在安装完成后再把Windows引导复制到第三分区，恢复第一分区的Colver引导。</p>
+<p>安装完可以正常使用，Colver会自动识别出Windows的引导。</p>
+<h3 id="a卡插帧">A卡插帧</h3>
+<p>AMD Fluid Motion Video，GCN架构A卡附带功能，据说看动画有效，好像只有Windows可以。</p>
+<ol>
+<li>A卡设置-视频-自定义-打开AMD Fluid Motion，AMD steady Video保持关闭。</li>
+<li>安装<a href="https://www.dogedoge.com/rd/RaMdtJ9pA1LhX29YcBC7rdLWw9Lp0oKaeoIQRis5sv7PsgywHClDpT2yMWs1c8eEd4CtjXFH9AFD%2F1C2CgHQgA%3D%3D">Bluesky Frame Rate Converter</a>（好像需要科学上网），选择<code>MODE2</code>，勾选<code>24p</code>、<code>30P</code>（支持插帧的帧数），然后Enable。</li>
+<li>安装Potplayer（官网最新版，不要mini），在<code>设置-滤镜-全局滤镜优先权-添加系统滤镜</code>，选择<code>Bluesky Frame Rate Converter</code>确定，然后右下角<code>优先顺序</code>设为<code>强制使用</code>。开始由于Potplayer版本问题，老是没有那个滤镜，折腾半天才发现版本问题，话说之前添加WebDAV的时候也有版本原因，所以还是官网下载最新的完整版吧。</li>
+<li>因为只支持24帧和30帧，所以插帧基本只对电影和动画有效。效果的话，画面变化幅度不大的确实变顺畅了，看动画应该不错；画面变化快的时候就感觉变得更模糊了，动作打斗这种不太适合。当然，电影有一种叫电影质感的东西，用这个可能也会影响到观感，这就见仁见智了。</li>
+</ol>
+<h2 id="其它">其它</h2>
+<h3 id="功耗和温度">功耗和温度</h3>
+<ul>
+<li>Windows和黑果待机都是<strong>50W +</strong></li>
+<li>播放4K视频，黑果（IINA硬解）<strong>80W +</strong>，Windows （potplayer硬解）<strong>120W +</strong></li>
+<li>Windows 怪物猎人1080P默认 <strong>300W</strong>左右</li>
+</ul>
+<p>我用的EFI文件的作者说RX580通过修改显卡设置降低显卡功耗，实测4K视频硬解降低30W左右的功耗，但是网页加载会卡一下，打字也有概率卡，体验较差，可能是不适用于590。</p>
+<h2 id="参考">参考</h2>
+<p>https://github.com/andot/MSI-B360M-MORTAR-IMACPRO-EFI<br>
+https://www.sqlsec.com/2018/09/hidpi.html<br>
+https://sleele.com/2019/03/21/smbios/<br>
+https://www.sqlsec.com/2018/09/hidpi.html</p>
+<p>https://post.smzdm.com/p/aqnlz0pp/</p>
+]]></content>
+    </entry>
+</feed>

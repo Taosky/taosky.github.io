@@ -1,0 +1,356 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+<meta name="description" content=""/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+<title>Telegram机器人的一些记录 | 某不科学的博客</title>
+
+<link rel="shortcut icon" href="https://taosky.github.io/favicon.ico?v=1670599887195">
+
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://taosky.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dockerfile.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dart.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-56540702-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+        gtag('config', 'UA-56540702-2');
+    </script>
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <div class="navbar-brand">
+        <img class="user-avatar" src="/images/avatar.png" alt="头像">
+        <div class="site-name gt-c-content-color-first">
+            某不科学的博客
+        </div>
+    </div>
+    
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+                <div class="nav-item">
+                    
+                        <a href="/" class="menu gt-a-link">
+                            首页
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/tags" class="menu gt-a-link">
+                            标签
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/archives" class="menu gt-a-link">
+                            归档
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="https://taosky.github.io/post/tools" class="menu gt-a-link">
+                            工具
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/friends" class="menu gt-a-link">
+                            友链
+                        </a>
+                    
+                </div>
+            
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1670599887195" action="/search/index.html">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    Telegram机器人的一些记录
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2018-09-21 ·
+                    </time>
+                    
+                        <a href="https://taosky.github.io/tag/wxr12efci/" class="post-tags">
+                            # Telegram
+                        </a>
+                    
+                        <a href="https://taosky.github.io/tag/MLLxPKGZ4/" class="post-tags">
+                            # Python
+                        </a>
+                    
+                </div>
+                
+                <div class="post-content">
+                    <figure data-type="image" tabindex="1"><img src="https://taosky.github.io/post-images/telegram-robot/0.png" alt="" loading="lazy"></figure>
+<p>起因是Telegram的中文搜索完全不能用，想通过bot对消息进行记录然后再查询，顺便加上了一个发帖提醒功能。</p>
+<p>使用的是<code>python-telegram-bot</code>，还是挺简单挺方便的。</p>
+<h2 id="简单说明">简单说明</h2>
+<p>主要用到了接受消息的<code>Dispatcher</code>类。<br>
+以下是官方文档的介绍：</p>
+<pre><code>The Updater class continuously fetches new updates from telegram and passes them on to the Dispatcher class. If you create an Updater object, it will create a Dispatcher for you and link them together with a Queue. You can then register handlers of different types in the Dispatcher, which will sort the updates fetched by the Updater according to the handlers you registered, and deliver them to a callback function that you defined.
+</code></pre>
+<pre><code class="language-python">from telegram.ext import Updater
+updater = Updater(token='TOKEN')
+dispatcher = updater.dispatcher
+</code></pre>
+<h2 id="记录消息">记录消息</h2>
+<p>想要读取消息只要给<code>dispatcher</code>添加处理消息的handler，这里使用的是处理正常消息的<code>MessageHandler</code>，此外还有处理命令的<code>CommandHandler</code>等。<br>
+<code>Filter.text</code>过滤文本信息，<code>store_message</code>是处理的函数，传入<code>bot</code>和<code>update</code>这两个参数。<br>
+<code>update</code>包含了这次更新的所有内容，主要用到<code>update.message</code>，包括<code>chat_id</code>、<code>message_id</code>、用户信息、消息内容等，见<a href="https://core.telegram.org/bots/api#message">Telegram api文档</a>；<code>bot</code>用于机器人的操作如发送/回复消息，群组操作、修改profile等，和正常用户的权限差不多，这里只读取消息所以没用到。</p>
+<pre><code class="language-python">dispatcher.add_handler(MessageHandler(Filters.text, store_message))
+</code></pre>
+<pre><code class="language-python">def store_message(bot, update):
+    update.message...
+    '保存到数据库'
+</code></pre>
+<h2 id="查询消息">查询消息</h2>
+<p>最早想的是通过命令加搜索内容来查询，但是这样就需要解决列表和分页问题；后来发现了<code>InlineMode</code>这种方便的东西。</p>
+<h3 id="command和inlinekeyboardmarkup">Command和InlineKeyboardMarkup</h3>
+<figure data-type="image" tabindex="2"><img src="https://taosky.github.io/post-images/telegram-robot/1.png" alt="" loading="lazy"></figure>
+<p>通过带参数的命令查询数据库并发送一条带有按钮操作的消息，这坨代码有点瞎眼。<br>
+首先要将结果构建一个<code>InlineKeyboardButton</code>组成的二维数组（列表），代表行列的按钮，还需要在下面加上翻页按钮。每个按钮除了显示的内容，还带有一个<code>callback_data</code>，被点击时会传给回调函数用来处理按钮点击。<br>
+用<code>InlineKeyboardMarkup</code>包装，最后通过<code>bot.search_message</code>来发送带有按钮的消息。</p>
+<pre><code class="language-python">dispatcher.add_handler(CommandHandler('search', search_message, pass_args=True))
+</code></pre>
+<pre><code class="language-python">def search_message(bot, update, args):
+    keyword = args[0]
+    page = int(args[1]) if len(args) &gt; 1 else 1
+    messages = 获取查询结果
+    # result button list
+    button_list = [
+        InlineKeyboardButton(
+            '{} | {} | {}'.format(message['text'][:12] + '...' if len(message['text']) &gt; 12 else message['text'],
+                                  message['user'], message['time'].strftime(&quot;%Y-%m-%d&quot;)),
+            callback_data='/locate {}'.format(message['id'])) for message in messages
+    ]
+    prev_button = InlineKeyboardButton(...)
+    next_button = InlineKeyboardButton(...)
+    pager = ...
+    reply_markup = InlineKeyboardMarkup(build_menu(button_list, n_cols=1, footer_buttons=pager))
+ 
+    bot.send_message(chat_id=...,text='...', reply_markup=reply_markup)
+</code></pre>
+<p>下面是按钮的回调函数，这里的<code>update.callback_query</code>就是按钮上带的<code>callback_data</code>，解析它得到消息的ID，再从数据库读取这条消息发出来。<br>
+如果是翻页的话需要再调用<code>search_message</code>函数查询，这里有个坑，传过去的<code>query</code>是不带<code>chat_id</code>的，所以还是要写死，而不能动态获取。</p>
+<pre><code class="language-python">dispatcher.add_handler(CallbackQueryHandler(locate_message))
+
+</code></pre>
+<pre><code class="language-python">def locate_message(bot, update):
+    query = update.callback_query
+    args = query.data.split(' ')[1:]
+    # change page
+    if query.data.startswith('/search'):
+        search_message(bot, query, args=args)
+    # locate message
+    elif query.data.startswith('/locate'):
+        msg_id = int(args[0])
+        target_message = 根据msg_id从数据库获取这条消息
+        if target_message:
+            text = 'At: {}/nContent: &quot;{}&quot;'.format(target_message['time'], target_message['text'])
+        else:
+            text = 'Database Error'
+        bot.send_message(chat_id=config.GROUP_ID, reply_to_message_id=msg_id,
+                         text=text, disable_notification=True)
+</code></pre>
+<h3 id="inlinemode">InlineMode</h3>
+<p>上面的方法虽然达到了目标，但是有很多问题。首先搜索的过程太过麻烦不易操作，如果要翻页产生大量信息会影响正常聊天，尽管可以采用定时撤回的方式，但还是有一段时间的滞留；其次，这种搜索方式是不隐蔽的，这个过程中每个人都能够操作，就会很混乱，没有限制的话对后台也是有影响的。</p>
+<figure data-type="image" tabindex="3"><img src="https://taosky.github.io/post-images/telegram-robot/2.png" alt="" loading="lazy"></figure>
+<p>后面找到了<code>InlineMode</code>这个东西，可以在@机器人的时候弹出一个可点击的列表，通过点击某一条，可以以自己的身份发送一条消息出去。<br>
+起初发现这条消息也会被机器人获取而记录，而且不能回复也就不能定位到历史消息，结合之前的方法又想到了可以发送命令来定位（命令不会被存储），这次就不需要很多东西，只要一个定位命令加上ID就行了。</p>
+<p>每条消息是一个<code>InlineQueryResultArticle</code>，包含标题、描述以及点击会发出去的消息文本<code>input_message_content</code>，把命令放在<code>input_message_content</code>里面，这样点击之后会发出定位消息的命令，触发机器人回复消息。</p>
+<pre><code class="language-python">handler = InlineQueryHandler(inline_caps)
+</code></pre>
+<pre><code class="language-python">def inline_caps(bot, update):
+    query = update.inline_query.query
+    处理query获得关键词和页码
+    # 结果列表
+    results = [InlineQueryResultArticle(
+        id='info',
+        title='Total:{}. Page {} of {}'.format(count, page, math.ceil(count / SEARCH_PAGE_SIZE)),
+        input_message_content=InputTextMessageContent('/help')
+    )]
+    for message in messages:
+        results.append(
+            InlineQueryResultArticle(
+                id=message['id'],
+                title='{}'.format(message['text'][:100]),
+                description=message['time'].strftime(&quot;%Y-%m-%d&quot;).ljust(40) + message['user'],
+                input_message_content=InputTextMessageContent('/locate {}'.format(message['id']))
+            )
+        )
+    bot.answer_inline_query(update.inline_query.id, results)
+
+</code></pre>
+<h2 id="发帖提醒">发帖提醒</h2>
+<p>这个是通过<code>updater.job_queue</code>设置定时任务，如果有贴子更新就发送一条消息，这个比较简单就不说了。</p>
+<pre><code class="language-python">job.run_repeating(one_monitor, interval=60, first=0)
+</code></pre>
+<pre><code class="language-python">def one_monitor(bot, job):
+    for post in get_update_post():
+        bot.send_message(...)
+
+</code></pre>
+<h2 id="总结">总结</h2>
+<p>总的来说，Telegram的API限制很少，只要脑洞大开就可以做出很多有意思的东西。当然也要防止滥用影响正常聊天，限制使用频率，也可以加上一些自动撤回之类的功能（管理员的话最好把用户命令也撤回）。</p>
+<h2 id="参考">参考</h2>
+<p>https://www.zchen.info/archives/deploying-telegram-bot-with-webhook.html<br>
+https://github.com/python-telegram-bot/python-telegram-bot/wiki/Code-snippets#build-a-menu-with-buttons<br>
+https://github.com/python-telegram-bot/python-telegram-bot/wiki/Types-Of-Handlers<br>
+https://stackoverflow.com/questions/45532078/remove-group-messages-with-python-telegram-bot<br>
+https://core.telegram.org/bots/api/#replykeyboardmarkup<br>
+https://python-telegram-bot.readthedocs.io/en/latest/telegram.inlinekeyboardbutton.html<br>
+https://stackoverflow.com/questions/41195822/multiple-callback-query-handlers<br>
+https://python-telegram-bot.readthedocs.io/en/stable/telegram.ext.callbackqueryhandler.html<br>
+https://github.com/python-telegram-bot/python-telegram-bot/wiki/Exception-Handling<br>
+https://github.com/python-telegram-bot/python-telegram-bot/wiki/Webhooks</p>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://taosky.github.io/post/python-binary-tree-reverse/" class="post-title gt-a-link">
+                    Python二叉树翻转
+                </a>
+            </div>
+        
+
+        
+
+        
+            
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+<script>
+    // md5.min.js
+    !function(n){
+        "use strict";
+        function d(n,t){var r=(65535&n)+(65535&t);return(n>>16)+(t>>16)+(r>>16)<<16|65535&r}
+        function f(n,t,r,e,o,u){return d((c=d(d(t,n),d(e,u)))<<(f=o)|c>>>32-f,r);var c,f}
+        function l(n,t,r,e,o,u,c){return f(t&r|~t&e,n,t,o,u,c)}
+        function v(n,t,r,e,o,u,c){return f(t&e|r&~e,n,t,o,u,c)}
+        function g(n,t,r,e,o,u,c){return f(t^r^e,n,t,o,u,c)}
+        function m(n,t,r,e,o,u,c){return f(r^(t|~e),n,t,o,u,c)}
+        function i(n,t){var r,e,o,u,c;n[t>>5]|=128<<t%32,n[14+(t+64>>>9<<4)]=t;var f=1732584193,i=-271733879,a=-1732584194,h=271733878;for(r=0;r<n.length;r+=16)f=l(e=f,o=i,u=a,c=h,n[r],7,-680876936),h=l(h,f,i,a,n[r+1],12,-389564586),a=l(a,h,f,i,n[r+2],17,606105819),i=l(i,a,h,f,n[r+3],22,-1044525330),f=l(f,i,a,h,n[r+4],7,-176418897),h=l(h,f,i,a,n[r+5],12,1200080426),a=l(a,h,f,i,n[r+6],17,-1473231341),i=l(i,a,h,f,n[r+7],22,-45705983),f=l(f,i,a,h,n[r+8],7,1770035416),h=l(h,f,i,a,n[r+9],12,-1958414417),a=l(a,h,f,i,n[r+10],17,-42063),i=l(i,a,h,f,n[r+11],22,-1990404162),f=l(f,i,a,h,n[r+12],7,1804603682),h=l(h,f,i,a,n[r+13],12,-40341101),a=l(a,h,f,i,n[r+14],17,-1502002290),f=v(f,i=l(i,a,h,f,n[r+15],22,1236535329),a,h,n[r+1],5,-165796510),h=v(h,f,i,a,n[r+6],9,-1069501632),a=v(a,h,f,i,n[r+11],14,643717713),i=v(i,a,h,f,n[r],20,-373897302),f=v(f,i,a,h,n[r+5],5,-701558691),h=v(h,f,i,a,n[r+10],9,38016083),a=v(a,h,f,i,n[r+15],14,-660478335),i=v(i,a,h,f,n[r+4],20,-405537848),f=v(f,i,a,h,n[r+9],5,568446438),h=v(h,f,i,a,n[r+14],9,-1019803690),a=v(a,h,f,i,n[r+3],14,-187363961),i=v(i,a,h,f,n[r+8],20,1163531501),f=v(f,i,a,h,n[r+13],5,-1444681467),h=v(h,f,i,a,n[r+2],9,-51403784),a=v(a,h,f,i,n[r+7],14,1735328473),f=g(f,i=v(i,a,h,f,n[r+12],20,-1926607734),a,h,n[r+5],4,-378558),h=g(h,f,i,a,n[r+8],11,-2022574463),a=g(a,h,f,i,n[r+11],16,1839030562),i=g(i,a,h,f,n[r+14],23,-35309556),f=g(f,i,a,h,n[r+1],4,-1530992060),h=g(h,f,i,a,n[r+4],11,1272893353),a=g(a,h,f,i,n[r+7],16,-155497632),i=g(i,a,h,f,n[r+10],23,-1094730640),f=g(f,i,a,h,n[r+13],4,681279174),h=g(h,f,i,a,n[r],11,-358537222),a=g(a,h,f,i,n[r+3],16,-722521979),i=g(i,a,h,f,n[r+6],23,76029189),f=g(f,i,a,h,n[r+9],4,-640364487),h=g(h,f,i,a,n[r+12],11,-421815835),a=g(a,h,f,i,n[r+15],16,530742520),f=m(f,i=g(i,a,h,f,n[r+2],23,-995338651),a,h,n[r],6,-198630844),h=m(h,f,i,a,n[r+7],10,1126891415),a=m(a,h,f,i,n[r+14],15,-1416354905),i=m(i,a,h,f,n[r+5],21,-57434055),f=m(f,i,a,h,n[r+12],6,1700485571),h=m(h,f,i,a,n[r+3],10,-1894986606),a=m(a,h,f,i,n[r+10],15,-1051523),i=m(i,a,h,f,n[r+1],21,-2054922799),f=m(f,i,a,h,n[r+8],6,1873313359),h=m(h,f,i,a,n[r+15],10,-30611744),a=m(a,h,f,i,n[r+6],15,-1560198380),i=m(i,a,h,f,n[r+13],21,1309151649),f=m(f,i,a,h,n[r+4],6,-145523070),h=m(h,f,i,a,n[r+11],10,-1120210379),a=m(a,h,f,i,n[r+2],15,718787259),i=m(i,a,h,f,n[r+9],21,-343485551),f=d(f,e),i=d(i,o),a=d(a,u),h=d(h,c);return[f,i,a,h]}
+        function a(n){var t,r="",e=32*n.length;for(t=0;t<e;t+=8)r+=String.fromCharCode(n[t>>5]>>>t%32&255);return r}
+        function h(n){var t,r=[];for(r[(n.length>>2)-1]=void 0,t=0;t<r.length;t+=1)r[t]=0;var e=8*n.length;for(t=0;t<e;t+=8)r[t>>5]|=(255&n.charCodeAt(t/8))<<t%32;return r}
+        function e(n){var t,r,e="0123456789abcdef",o="";for(r=0;r<n.length;r+=1)t=n.charCodeAt(r),o+=e.charAt(t>>>4&15)+e.charAt(15&t);return o}
+        function r(n){return unescape(encodeURIComponent(n))}
+        function o(n){return a(i(h(t=r(n)),8*t.length));var t}
+        function u(n,t){return function(n,t){var r,e,o=h(n),u=[],c=[];for(u[15]=c[15]=void 0,16<o.length&&(o=i(o,8*n.length)),r=0;r<16;r+=1)u[r]=909522486^o[r],c[r]=1549556828^o[r];return e=i(u.concat(h(t)),512+8*t.length),a(i(c.concat(e),640))}(r(n),r(t))}
+        function t(n,t,r){return t?r?u(t,n):e(u(t,n)):r?o(n):e(o(n))}
+        "function"==typeof define&&define.amd?define(function(){return t}):"object"==typeof module&&module.exports?module.exports=t:n.md5=t;
+    }(this);
+</script>
+
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: 'a1520c10806904212b2d',
+    clientSecret: '43932379b50cc625d1a6686297109399deff1ced',
+    repo: 'taosky.github.io',
+    owner: 'Taosky',
+    admin: ['Taosky'],
+    id: md5(location.pathname),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false       // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+            
+
+            
+        
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first">只能告诉你 要多想</div>
+    <div class="social-container">
+        
+            
+                <a href="https://github.com/Taosky" target="_blank">
+                    <i class="fab fa-github gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+    </div>
+    <div class="footer-info">
+        <span><i class="iconfont reco-copyright"></i> <a><span>2014-</span>
+        2022
+        &nbsp
+        <span>Taosky</span></a></span>
+    </div>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+    </div>
+</div>
+</body>
+</html>

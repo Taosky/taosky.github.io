@@ -1,0 +1,282 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+<meta name="description" content=""/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+<title>Kodi 18 on Pi Zero W | 某不科学的博客</title>
+
+<link rel="shortcut icon" href="https://taosky.github.io/favicon.ico?v=1670599887195">
+
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://taosky.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dockerfile.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dart.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-56540702-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+        gtag('config', 'UA-56540702-2');
+    </script>
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <div class="navbar-brand">
+        <img class="user-avatar" src="/images/avatar.png" alt="头像">
+        <div class="site-name gt-c-content-color-first">
+            某不科学的博客
+        </div>
+    </div>
+    
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+                <div class="nav-item">
+                    
+                        <a href="/" class="menu gt-a-link">
+                            首页
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/tags" class="menu gt-a-link">
+                            标签
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/archives" class="menu gt-a-link">
+                            归档
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="https://taosky.github.io/post/tools" class="menu gt-a-link">
+                            工具
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/friends" class="menu gt-a-link">
+                            友链
+                        </a>
+                    
+                </div>
+            
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1670599887195" action="/search/index.html">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    Kodi 18 on Pi Zero W
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2019-05-06 ·
+                    </time>
+                    
+                        <a href="https://taosky.github.io/tag/I6kcIiej4/" class="post-tags">
+                            # Kodi
+                        </a>
+                    
+                        <a href="https://taosky.github.io/tag/QxU2xQq8NW/" class="post-tags">
+                            # 树莓派
+                        </a>
+                    
+                </div>
+                
+                <div class="post-content">
+                    <p>Kodi是一个跨平台的播放器，可以运行在Linux发行版、Android、Windows等平台，看到很多人装在树莓派上用，于是也试了一下。虽然zero w性能比较差，但是GPU是一样的，可以硬解1080P30帧的视频，还是比较厉害的。</p>
+<h2 id="安装">安装</h2>
+<p>有一些Only For Kodi的发行版，如<a href="https://libreelec.tv/">LibreELEC</a>，应该是专门对Kodi进行了优化，但是也只能用于Kodi。因为我的PI还要用来开开空调啥的，所以就还是手动安装在Raspbian上。</p>
+<p>安装Kodi程序</p>
+<p><code>apt install kodi</code></p>
+<p>安装pvr client（貌似是看直播用的，暂时没用到）</p>
+<p><code>apt install kodi-peripheral-joystick kodi-pvr-iptvsimple kodi-inputstream-adaptive kodi-inputstream-rtmp</code></p>
+<p>创建一个服务</p>
+<p><code>$ sudo tee -a /lib/systemd/system/kodi.service &lt;&lt;_EOF_[Unit]Description = Kodi Media CenterAfter = remote-fs.target network-online.targetWants = network-online.target[Service]User = piGroup = piType = simpleExecStart = /usr/bin/kodiRestart = on-abortRestartSec = 5[Install]WantedBy = multi-user.target_EOF_</code></p>
+<p>随系统启动</p>
+<p><code>sudo systemctl enable kodi</code></p>
+<p>没有开关控制kodi关闭开启，我写了个web服务，然后用IOS捷径请求来控制。</p>
+<h2 id="启动">启动</h2>
+<p>通过HDMI和电视连接，由于zero w是mini hdmi借口，需要一个转接头。</p>
+<p>修改<code>/boot/config.txt</code>， 取消注释<code>hdmi_safe=0</code>。一开始没有这么操作，启动了很久也没画面。</p>
+<p>修改<code>/boot/config.txt</code>，加入<code>gpu_mem=280</code>，这个是分配给GPU的内存，否则播放不了视频。</p>
+<p>然后重启PI，应该就可以看到画面了。</p>
+<figure data-type="image" tabindex="1"><img src="https://taosky.github.io/post-images/kodi/0.jpg" alt="" loading="lazy"></figure>
+<h2 id="基本配置">基本配置</h2>
+<p>当然要先插个键盘才能操作，基本就用到上下左右回车和ESC。</p>
+<p>第一步要修改语言，进入设置-Interface-Skin，Font更改为Arial Based，然后进入Region，Language选简体中文就好了，不改字体会乱码。</p>
+<p>用键盘操作不是长久之计，KODI是可以通过手机控制的，进入设置-服务-控制，允许HTTP远程控制，允许通过异地程序控制，在手机应用商店搜索kodi，IOS上是Kodi Remote，应该可以检测到KODI，连接后就可以愉快操作了。除了按键功能还能用手机输入法输入字符，控制当前播放。</p>
+<figure data-type="image" tabindex="2"><img src="https://taosky.github.io/post-images/kodi/1.jpg" alt="" loading="lazy"></figure>
+<p>用的720P分辨率在我的1366*768上有些超出边缘，在界面-皮肤里面有个“满屏”，设置成-4%就刚刚好了，不过播放视频的时候还是有这个问题。</p>
+<h2 id="视频播放">视频播放</h2>
+<p>设置完这些东西就可以尝试播放了，进入文件区-添加视频，这边就可以添加很多视频源，包括本地、SMB、NFS等，添加了之后会提示属于电影还是什么，就会通过“电影刮削器”进行匹配（默认是用的TMDB，我们可以在插件里面安装mtime、douban这样的刮削器来显示电影的中文信息。)</p>
+<p>回到主页就可以看到电影海报了，这时候就可以播放了，看了一下常规的720P视频是没问题的，小一点的1080P也是可以的，大的文件应该就不行了(50分钟2.97G的播放卡顿)，毕竟I/O太差，根本来不及加载。</p>
+<figure data-type="image" tabindex="3"><img src="https://taosky.github.io/post-images/kodi/2.jpg" alt="" loading="lazy"></figure>
+<h2 id="插件">插件</h2>
+<p>Kodi的插件还是很丰富的（基于python比较好写吧），不过也很容易失效，试了一些，很多是bs4爬虫的，已经失效了，想看国内视频网站还是有点困难的。</p>
+<p>Kodi插件可以通过本地zip包安装，也可以通过库安装，自带一个官方的库，mtime刮削器在官方的库里面就有，也可以添加网上的库。</p>
+<p>好像还有一些需要安装系统的软件包，比如我用的SFTP，从Kodi中移除了，树莓派安装<code>kodi-vfs-sftp</code>这个包，重启Kodi启用插件就能添加SFTP的视频源了。</p>
+<h2 id="直播">直播</h2>
+<p>这个大概就是添加M3U8的视频链接来播放，这种东西很容易失效，有机会再研究一下。</p>
+<h2 id="dlna投屏">DLNA投屏</h2>
+<p>Kodi只支持Airplay的声音传输（毕竟苹果不开放，不过有些国产投屏好像可以），所以还是用Dlna就好了，打开服务里面的DLNA，Windows上右击视频播放到设备里面应该就可以显示了。</p>
+<p>嫌麻烦的话手机app也是可以的，IOS上可以用nplayer，可以播放器控制，也可以用遥控app控制，还是很实用的。DLNA好像还是把视频传到服务端去解码，所以对于大容量视频卡顿并没有改善。</p>
+<figure data-type="image" tabindex="4"><img src="https://taosky.github.io/post-images/kodi/3.jpg" alt="" loading="lazy"></figure>
+<h2 id="android电视上的kodi">Android电视上的Kodi</h2>
+<p>一看我的树莓派都能跑，这个电视本身也跑动的Kodi吧，于是就尝试了一下。</p>
+<p>Android4.0.4就只能用Kodi14了，安装了以后界面感觉比新版还舒服一点，一通操作后，发现放视频卡顿，怀疑是SMB的问题，用U盘放了一下还是卡顿，应该就是不支持硬解了，看来适配还是个问题。</p>
+<p>网上搜了一下，发现有调用外置播放器的操作，见<a href="https://kodi.wiki/view/External_players">Wiki</a>。</p>
+<p>虽然外置播放器可以解决硬解问题，MX Player这样的播放器很多是不支持SMB等协议的，有人说可以用Mount Manager挂载到本地，试了一下也没有成功，可能是电视问题。</p>
+<p>顺便吐槽一下Android电视，操作太麻烦，定制性强，很多东西用不了，硬件跟不上。之前开机变砖相当显示器用都不行，传统电视机+盒子才是趋势啊。</p>
+<h2 id="参考">参考</h2>
+<p>https://blog.ibeats.top/2018/05/20/kodi-pvr.html</p>
+<p>https://magicmagnet.me/blog/DLNA%E6%8A%95%E5%B1%8F%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/</p>
+<p>https://forum.kodi.tv/showthread.php?tid=338204</p>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://taosky.github.io/post/disqus-to-valine/" class="post-title gt-a-link">
+                    更换Disqus评论为Valine
+                </a>
+            </div>
+        
+
+        
+
+        
+            
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+<script>
+    // md5.min.js
+    !function(n){
+        "use strict";
+        function d(n,t){var r=(65535&n)+(65535&t);return(n>>16)+(t>>16)+(r>>16)<<16|65535&r}
+        function f(n,t,r,e,o,u){return d((c=d(d(t,n),d(e,u)))<<(f=o)|c>>>32-f,r);var c,f}
+        function l(n,t,r,e,o,u,c){return f(t&r|~t&e,n,t,o,u,c)}
+        function v(n,t,r,e,o,u,c){return f(t&e|r&~e,n,t,o,u,c)}
+        function g(n,t,r,e,o,u,c){return f(t^r^e,n,t,o,u,c)}
+        function m(n,t,r,e,o,u,c){return f(r^(t|~e),n,t,o,u,c)}
+        function i(n,t){var r,e,o,u,c;n[t>>5]|=128<<t%32,n[14+(t+64>>>9<<4)]=t;var f=1732584193,i=-271733879,a=-1732584194,h=271733878;for(r=0;r<n.length;r+=16)f=l(e=f,o=i,u=a,c=h,n[r],7,-680876936),h=l(h,f,i,a,n[r+1],12,-389564586),a=l(a,h,f,i,n[r+2],17,606105819),i=l(i,a,h,f,n[r+3],22,-1044525330),f=l(f,i,a,h,n[r+4],7,-176418897),h=l(h,f,i,a,n[r+5],12,1200080426),a=l(a,h,f,i,n[r+6],17,-1473231341),i=l(i,a,h,f,n[r+7],22,-45705983),f=l(f,i,a,h,n[r+8],7,1770035416),h=l(h,f,i,a,n[r+9],12,-1958414417),a=l(a,h,f,i,n[r+10],17,-42063),i=l(i,a,h,f,n[r+11],22,-1990404162),f=l(f,i,a,h,n[r+12],7,1804603682),h=l(h,f,i,a,n[r+13],12,-40341101),a=l(a,h,f,i,n[r+14],17,-1502002290),f=v(f,i=l(i,a,h,f,n[r+15],22,1236535329),a,h,n[r+1],5,-165796510),h=v(h,f,i,a,n[r+6],9,-1069501632),a=v(a,h,f,i,n[r+11],14,643717713),i=v(i,a,h,f,n[r],20,-373897302),f=v(f,i,a,h,n[r+5],5,-701558691),h=v(h,f,i,a,n[r+10],9,38016083),a=v(a,h,f,i,n[r+15],14,-660478335),i=v(i,a,h,f,n[r+4],20,-405537848),f=v(f,i,a,h,n[r+9],5,568446438),h=v(h,f,i,a,n[r+14],9,-1019803690),a=v(a,h,f,i,n[r+3],14,-187363961),i=v(i,a,h,f,n[r+8],20,1163531501),f=v(f,i,a,h,n[r+13],5,-1444681467),h=v(h,f,i,a,n[r+2],9,-51403784),a=v(a,h,f,i,n[r+7],14,1735328473),f=g(f,i=v(i,a,h,f,n[r+12],20,-1926607734),a,h,n[r+5],4,-378558),h=g(h,f,i,a,n[r+8],11,-2022574463),a=g(a,h,f,i,n[r+11],16,1839030562),i=g(i,a,h,f,n[r+14],23,-35309556),f=g(f,i,a,h,n[r+1],4,-1530992060),h=g(h,f,i,a,n[r+4],11,1272893353),a=g(a,h,f,i,n[r+7],16,-155497632),i=g(i,a,h,f,n[r+10],23,-1094730640),f=g(f,i,a,h,n[r+13],4,681279174),h=g(h,f,i,a,n[r],11,-358537222),a=g(a,h,f,i,n[r+3],16,-722521979),i=g(i,a,h,f,n[r+6],23,76029189),f=g(f,i,a,h,n[r+9],4,-640364487),h=g(h,f,i,a,n[r+12],11,-421815835),a=g(a,h,f,i,n[r+15],16,530742520),f=m(f,i=g(i,a,h,f,n[r+2],23,-995338651),a,h,n[r],6,-198630844),h=m(h,f,i,a,n[r+7],10,1126891415),a=m(a,h,f,i,n[r+14],15,-1416354905),i=m(i,a,h,f,n[r+5],21,-57434055),f=m(f,i,a,h,n[r+12],6,1700485571),h=m(h,f,i,a,n[r+3],10,-1894986606),a=m(a,h,f,i,n[r+10],15,-1051523),i=m(i,a,h,f,n[r+1],21,-2054922799),f=m(f,i,a,h,n[r+8],6,1873313359),h=m(h,f,i,a,n[r+15],10,-30611744),a=m(a,h,f,i,n[r+6],15,-1560198380),i=m(i,a,h,f,n[r+13],21,1309151649),f=m(f,i,a,h,n[r+4],6,-145523070),h=m(h,f,i,a,n[r+11],10,-1120210379),a=m(a,h,f,i,n[r+2],15,718787259),i=m(i,a,h,f,n[r+9],21,-343485551),f=d(f,e),i=d(i,o),a=d(a,u),h=d(h,c);return[f,i,a,h]}
+        function a(n){var t,r="",e=32*n.length;for(t=0;t<e;t+=8)r+=String.fromCharCode(n[t>>5]>>>t%32&255);return r}
+        function h(n){var t,r=[];for(r[(n.length>>2)-1]=void 0,t=0;t<r.length;t+=1)r[t]=0;var e=8*n.length;for(t=0;t<e;t+=8)r[t>>5]|=(255&n.charCodeAt(t/8))<<t%32;return r}
+        function e(n){var t,r,e="0123456789abcdef",o="";for(r=0;r<n.length;r+=1)t=n.charCodeAt(r),o+=e.charAt(t>>>4&15)+e.charAt(15&t);return o}
+        function r(n){return unescape(encodeURIComponent(n))}
+        function o(n){return a(i(h(t=r(n)),8*t.length));var t}
+        function u(n,t){return function(n,t){var r,e,o=h(n),u=[],c=[];for(u[15]=c[15]=void 0,16<o.length&&(o=i(o,8*n.length)),r=0;r<16;r+=1)u[r]=909522486^o[r],c[r]=1549556828^o[r];return e=i(u.concat(h(t)),512+8*t.length),a(i(c.concat(e),640))}(r(n),r(t))}
+        function t(n,t,r){return t?r?u(t,n):e(u(t,n)):r?o(n):e(o(n))}
+        "function"==typeof define&&define.amd?define(function(){return t}):"object"==typeof module&&module.exports?module.exports=t:n.md5=t;
+    }(this);
+</script>
+
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: 'a1520c10806904212b2d',
+    clientSecret: '43932379b50cc625d1a6686297109399deff1ced',
+    repo: 'taosky.github.io',
+    owner: 'Taosky',
+    admin: ['Taosky'],
+    id: md5(location.pathname),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false       // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+            
+
+            
+        
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first">只能告诉你 要多想</div>
+    <div class="social-container">
+        
+            
+                <a href="https://github.com/Taosky" target="_blank">
+                    <i class="fab fa-github gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+    </div>
+    <div class="footer-info">
+        <span><i class="iconfont reco-copyright"></i> <a><span>2014-</span>
+        2022
+        &nbsp
+        <span>Taosky</span></a></span>
+    </div>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+    </div>
+</div>
+</body>
+</html>
