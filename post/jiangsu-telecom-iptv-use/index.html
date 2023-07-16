@@ -183,12 +183,13 @@
 <p>打开<code>http://192.168.2.1:4022/status</code>正常显示，播放器打开<code>http://192.168.2.1:4022/udp/239.49.8.19:9614</code>可以播放，测试成功。<br>
 <img src="https://taosky.github.io/post-images/1643979705044.png" alt="" loading="lazy"><br>
 <img src="https://taosky.github.io/post-images/1643976856381.png" alt="" loading="lazy"></p>
-<p>接着创建service<code>sudo vi /etc/systemd/system/udpxy.service</code>（User要设置成ubnt，试了root不行）</p>
+<p>接着创建service<code>sudo vi /etc/systemd/system/udpxy.service</code>（User要设置成ubnt，试了root不行），这里设置了ExecStartPre等待30秒执行，防止重启后启动失败</p>
 <pre><code class="language-service">[Unit]
 Description=Udpxy
 After=network.target
 
 [Service]
+ExecStartPre=/bin/sleep 30
 ExecStart=/home/ubnt/udpxy -S -a 192.168.2.1 -p 4022 -m eth4 -c 10 -B 1MB -M 30
 User=ubnt
 
